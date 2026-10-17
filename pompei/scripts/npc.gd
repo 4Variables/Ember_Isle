@@ -5,7 +5,7 @@ enum State { IDLE, MOVING_TO_FIRE, EXTINGUISHING, COMMANDED }
 
 signal movement_completed(citizen: CharacterBody3D)
 
-@export var move_speed := 4.0
+@export var move_speed := 8.0
 @export var stop_distance := 0.2         # how close counts as "arrived" for commands
 @export var sight_range := 25.0          # how far it notices fires
 @export var reach := 2.0                 # how close it must be to extinguish
@@ -14,9 +14,16 @@ signal movement_completed(citizen: CharacterBody3D)
 @export var gravity := 20.0
 @export var max_health := 100.0
 @export var auto_extinguish := true      # set false to disable the fire AI
+var _move_marker: MeshInstance3D
+var _marker_tween: Tween
+
+@export var ring_radius := 0.6
+@export var ring_thickness := 0.06
+@export var ring_height := -0.9          # local Y of the NPC's feet (see note below)
+@export var ring_color := Color(0.3, 0.8, 1.0, 0.9)
+var _selection_ring: MeshInstance3D
 
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
-@onready var selection_indicator: MeshInstance3D = $SelectionIndicator
 @onready var interaction_area: Area3D = $InteractionArea
 @onready var inventory: CitizenInventory = $Inventory
 
@@ -28,19 +35,59 @@ var _scan_timer := 0.0
 func _ready() -> void:
 	health = max_health
 	add_to_group("selectable")
-	selection_indicator.visible = false
 	navigation_agent_3d.target_desired_distance = stop_distance
+	_create_selection_ring()
+	_create_move_marker()
 	#print("[%s] ready at %s" % [name, global_position])
 
+func _create_move_marker() -> void:
+	var ring := TorusMesh.new()
+	ring.inner_radius = 0.35
+	ring.outer_radius = 0.5
+
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_color = Color(0.2, 1.0, 0.4, 0.85)
+
+	_move_marker = MeshInstance3D.new()
+	_move_marker.mesh = ring
+	_move_marker.material_override = mat
+	_move_marker.top_level = true      # don't follow the NPC
+	_move_marker.visible = false
+	add_child(_move_marker)
+	
+func _show_move_marker(pos: Vector3) -> void:
+	_move_marker.global_position = pos + Vector3.UP * 0.05   # lift slightly to avoid z-fighting
+	_move_marker.scale = Vector3(1.0, 0.1, 1.0)               # flatten the torus
+	_move_marker.visible = true
+
+	# gentle pulse
+	if _marker_tween:
+		_marker_tween.kill()
+	_marker_tween = create_tween().set_loops()
+	_marker_tween.tween_property(_move_marker, "scale", Vector3(1.3, 0.1, 1.3), 0.5)
+	_marker_tween.tween_property(_move_marker, "scale", Vector3(1.0, 0.1, 1.0), 0.5)
+
+func _hide_move_marker() -> void:
+	if _marker_tween:
+		_marker_tween.kill()
+	_move_marker.visible = false
+	
 # Player Specific Commands.
 func set_selected(value: bool) -> void:
-	selection_indicator.visible = value
+	_selection_ring.visible = value
 
-func move_to(target: Vector3) -> void:
+func move_to(target: Vector3, show_marker := true) -> void:
 	interaction_area.PickupTarget = null
 	target_fire = null
 	state = State.COMMANDED
 	navigation_agent_3d.target_position = target
+	if show_marker:
+		_show_move_marker(target)
+	else:
+		_hide_move_marker()
+
 
 func pick_up(item: InteractableItem) -> void:
 	move_to(item.global_position)
@@ -95,6 +142,7 @@ func _process_commanded() -> void:
 
 func _finish_command() -> void:
 	_stop_horizontal()
+	_hide_move_marker()
 	state = State.IDLE
 	_scan_timer = 0.0
 	movement_completed.emit(self)   # emitted once, not every frame
@@ -170,3 +218,23 @@ func _face(pos: Vector3) -> void:
 	var look := Vector3(pos.x, global_position.y, pos.z)
 	if look.distance_squared_to(global_position) > 0.01:
 		look_at(look, Vector3.UP)
+
+func _create_selection_ring() -> void:
+	var ring := TorusMesh.new()
+	ring.inner_radius = ring_radius - ring_thickness
+	ring.outer_radius = ring_radius + ring_thickness
+
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_color = ring_color
+	mat.no_depth_test = false
+
+	_selection_ring = MeshInstance3D.new()
+	_selection_ring.mesh = ring
+	_selection_ring.material_override = mat
+	_selection_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_selection_ring.scale = Vector3(1.0, 0.1, 1.0)     # flatten into a disc-like ring
+	_selection_ring.position = Vector3(0.0, ring_height, 0.0)
+	_selection_ring.visible = false
+	add_child(_selection_ring)

@@ -9,6 +9,7 @@ var Items : Array[ItemData] = []
 var EquippedSlot : int = -1
 
 func _ready():
+	print("ItemSlotsCount = ", ItemSlotsCount, " on ", get_path())
 	Items.resize(ItemSlotsCount)
 
 func AddItem(item : ItemData) -> bool:

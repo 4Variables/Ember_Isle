@@ -3,7 +3,7 @@ class_name InventoryHandler
 
 @export_flags_3d_physics var CollisionMask : int = 1
  
-@export var ItemSlotsCount : int = 20
+@export var ItemSlotsCount : int = 8
 
 @export var InventoryGrid : GridContainer
 @export var InventorySlotPrefab : PackedScene = preload("res://Inventory/InventorySlot.tscn")
