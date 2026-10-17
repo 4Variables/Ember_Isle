@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://bywbl1xi00468" path="res://scripts/movement/PlayerInteractionHandler.gd" id="2_tl2vt"]
 [ext_resource type="Script" uid="uid://css7482j4jld8" path="res://Inventory/ItemData.gd" id="3_hwkja"]
 [ext_resource type="Resource" uid="uid://b1jinqydlak6a" path="res://Inventory/Items/TestCube.tres" id="4_0tygy"]
-[ext_resource type="Resource" path="res://Inventory/Items/TestSphere.tres" id="5_sptji"]
+[ext_resource type="Resource" uid="uid://b2uicw30f2cjm" path="res://Inventory/Items/TestSphere.tres" id="5_sptji"]
 [ext_resource type="Script" uid="uid://d3qbykqrcq52" path="res://Inventory/CitizenInventory.gd" id="6_v4e37"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_fr0e3"]
