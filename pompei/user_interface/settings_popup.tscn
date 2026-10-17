@@ -1,0 +1,133 @@
+[gd_scene format=3 uid="uid://dmqn7k1i8x7ga"]
+
+[ext_resource type="FontFile" uid="uid://dr2njdy55my5h" path="res://user_interface/GrapeSoda.ttf" id="1_j8nnb"]
+[ext_resource type="Script" uid="uid://bo18vyd5uqgi6" path="res://user_interface/settings_popup.gd" id="1_xib87"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j8nnb"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.20392157)
+shadow_size = 5
+shadow_offset = Vector2(0, 3.41)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xib87"]
+bg_color = Color(0.6509804, 0.6509804, 0.6509804, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.20392157)
+shadow_size = 5
+shadow_offset = Vector2(0, 3.41)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8bv6h"]
+bg_color = Color(0.8235294, 0.8235294, 0.8235294, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.20392157)
+shadow_size = 5
+shadow_offset = Vector2(0, 3.41)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_601i2"]
+
+[node name="Control" type="Control" unique_id=297375901]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+script = ExtResource("1_xib87")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1763280663]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer" unique_id=1916019531]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/PanelContainer" unique_id=1514584192]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/PanelContainer/Panel" unique_id=524434602]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -162.5
+offset_top = -153.5
+offset_right = 162.5
+offset_bottom = 153.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 23
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/PanelContainer/Panel/VBoxContainer" unique_id=545465062]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/PanelContainer/Panel/VBoxContainer/MarginContainer" unique_id=1870464188]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 10
+theme_override_fonts/font = ExtResource("1_j8nnb")
+theme_override_font_sizes/font_size = 100
+text = "Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VolumeLabel" type="Label" parent="MarginContainer/PanelContainer/Panel/VBoxContainer" unique_id=2047311921]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "Volume"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VolumeSlider" type="HSlider" parent="MarginContainer/PanelContainer/Panel/VBoxContainer" unique_id=1774107318]
+layout_mode = 2
+
+[node name="LanguageLabel" type="Label" parent="MarginContainer/PanelContainer/Panel/VBoxContainer" unique_id=681500970]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "Language"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/PanelContainer/Panel/VBoxContainer" unique_id=1496544038]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="LanguageOption" type="OptionButton" parent="MarginContainer/PanelContainer/Panel/VBoxContainer/MarginContainer2" unique_id=264176373]
+layout_mode = 2
+alignment = 1
+selected = 0
+item_count = 2
+popup/item_0/text = "English"
+popup/item_0/id = 0
+popup/item_1/text = "Turkish"
+popup/item_1/id = 1
+
+[node name="CloseButton" type="Button" parent="MarginContainer/PanelContainer/Panel/VBoxContainer" unique_id=1121383746]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_j8nnb")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_xib87")
+theme_override_styles/hover = SubResource("StyleBoxFlat_8bv6h")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_601i2")
+text = "Close"
+
+[connection signal="pressed" from="MarginContainer/PanelContainer/Panel/VBoxContainer/CloseButton" to="." method="_on_close_pressed"]
