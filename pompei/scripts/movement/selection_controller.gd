@@ -1,14 +1,16 @@
 extends Node3D
 
 @export_flags_3d_physics var ground_collision_mask: int = 1
-@export_flags_3d_physics var player_collision_mask: int = 2
+@export_flags_3d_physics var player_collision_mask: int = 3
+@export_flags_3d_physics var item_collision_mask: int = 6
+@export_flags_3d_physics var tree_collision_mask: int = 2
 
 @export var inventory_key: Key = KEY_I
 
 @onready var camera_3d: Camera3D = $"../rig/Camera3D"
 @onready var selection_box: Control = $"../SelectionUI/SelectionBox"
 @onready var inventory_hud: InventoryHandler = $"../InventoryHUD/InventoryUI"
-@onready var prompt: Label = $"../PromptUI/InteractionPrompt"
+@onready var prompt: Label = $"../PromptUI/Label"
 
 const DRAG_THRESHOLD := 8.0
 
@@ -25,6 +27,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("Interact"):
 		interact_with_nearby()
 		return
+		
 	if event is InputEventKey:
 		if event.pressed and not event.echo and event.keycode == inventory_key:
 			toggle_inventory()
@@ -86,6 +89,18 @@ func handle_click(mouse_pos: Vector2) -> void:
 		_on_selection_changed()
 		return
 
+	var item := get_item_at(mouse_pos)
+	if item != null:
+		for p in selected_players:
+			p.pick_up(item)
+		return
+	
+	var tree := get_tree_at(mouse_pos)          # <-- add
+	if tree != null:
+		for p in selected_players:
+			p.chop_tree(tree)
+		return
+		
 	var target = get_ground_position(mouse_pos)
 	if target != null:
 		for p in selected_players:
@@ -115,6 +130,12 @@ func get_player_at(mouse_pos: Vector2) -> CharacterBody3D:
 		node = node.get_parent()
 	return null
 
+
+func get_item_at(mouse_pos: Vector2) -> InteractableItem:
+	var result := _raycast(mouse_pos, item_collision_mask)
+	if result.is_empty():
+		return null
+	return result["collider"] as InteractableItem
 
 
 func get_ground_position(mouse_pos: Vector2) -> Variant:
@@ -176,6 +197,18 @@ func _refresh_inventory() -> void:
 	else:
 		inventory_hud.ShowInventory(null)
 
+func get_tree_at(mouse_pos: Vector2) -> ChoppableTree:
+	var result := _raycast(mouse_pos, tree_collision_mask)
+	if result.is_empty():
+		return null
+
+	# Walk upward in case the hit collider is a child of the tree root.
+	var node: Node = result["collider"]
+	while node != null:
+		if node is ChoppableTree:
+			return node as ChoppableTree
+		node = node.get_parent()
+	return null
 
 func _process(_delta: float) -> void:
 	_update_prompt()

@@ -1,12 +1,15 @@
 class_name Npc
 extends CharacterBody3D
 
-enum State { IDLE, MOVING_TO_FIRE, EXTINGUISHING, COMMANDED, CLEARING }
-
-@export var clear_power := 1.0           # work done on obstacles per second
-var target_obstacle: ClearableObstacle
+enum State { IDLE, MOVING_TO_FIRE, EXTINGUISHING, COMMANDED , MOVING_TO_TREE, CHOPPING}
 
 signal movement_completed(citizen: CharacterBody3D)
+
+@export var chop_reach := 2.5
+@export var chop_power := 1.0            # chop() amount per second
+@export var auto_continue_chopping := true  # look for the next tree when one is felled
+
+var target_tree: ChoppableTree
 
 @export var move_speed := 8.0
 @export var stop_distance := 0.2         # how close counts as "arrived" for commands
@@ -29,6 +32,8 @@ var _selection_ring: MeshInstance3D
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 @onready var interaction_area: Area3D = $InteractionArea
 @onready var inventory: CitizenInventory = $Inventory
+
+@export var wood_item: ItemData
 
 var health := 0.0
 var state := State.IDLE
@@ -83,23 +88,22 @@ func set_selected(value: bool) -> void:
 
 func move_to(target: Vector3, show_marker := true) -> void:
 	target_fire = null
-	target_obstacle = null
+	target_tree = null
 	state = State.COMMANDED
 	navigation_agent_3d.target_position = target
 	if show_marker:
-		_show_move_marker(target)
+		_show_move_marker	(target)
 	else:
 		_hide_move_marker()
-
 
 func interact(target: Node3D) -> void:
 	if target is InteractableItem:
 		interaction_area.TryPickup(target as InteractableItem)
-	elif target is ClearableObstacle:
-		target_fire = null
-		target_obstacle = target as ClearableObstacle
-		state = State.CLEARING
-		_hide_move_marker()
+
+
+func pick_up(item: InteractableItem) -> void:
+	move_to(item.global_position)
+	interaction_area.SetPickupTarget(item)
 
 # Health.
 func take_damage(amount: float) -> void:
@@ -122,8 +126,10 @@ func _physics_process(delta: float) -> void:
 			_process_moving_to_fire()
 		State.EXTINGUISHING:
 			_process_extinguishing(delta)
-		State.CLEARING:
-			_process_clearing(delta)
+		State.MOVING_TO_TREE:
+			_process_moving_to_tree()
+		State.CHOPPING:
+			_process_chopping(delta)
 
 	move_and_slide()
 
@@ -150,6 +156,72 @@ func _process_commanded() -> void:
 
 	_steer_toward(next)
 
+# --- Chopping ---
+
+func _process_moving_to_tree() -> void:
+	if not _tree_valid():
+		_on_tree_gone()
+		return
+	if _flat_distance_to(target_tree) <= chop_reach:
+		state = State.CHOPPING
+		_stop_horizontal()
+		return
+	navigation_agent_3d.target_position = target_tree.global_position
+	# Gave up: path ended but we're still out of reach (tree unreachable)
+	if navigation_agent_3d.is_navigation_finished():
+		_stop_horizontal()
+		target_tree = null
+		state = State.IDLE
+		return
+	_steer_toward(navigation_agent_3d.get_next_path_position())
+
+func _has_free_slot() -> bool:
+	return inventory.Items.has(null)
+	
+func _process_chopping(delta: float) -> void:
+	_stop_horizontal()
+	if not _tree_valid():
+		_on_tree_gone()
+		return
+	if _flat_distance_to(target_tree) > chop_reach * 1.2:
+		state = State.MOVING_TO_TREE
+		return
+	
+	if not _has_free_slot():
+		_on_inventory_full()
+		return
+			
+	_face(target_tree.global_position)
+	var wood := target_tree.chop(chop_power * delta)
+	for i in wood:
+		if not inventory.AddItem(wood_item):
+			_on_inventory_full()
+			break
+
+
+func _tree_valid() -> bool:
+	return is_instance_valid(target_tree) and target_tree.is_in_group("trees")
+
+func _on_tree_gone() -> void:
+	var next := _find_nearest_tree() if auto_continue_chopping else null
+	if next:
+		target_tree = next
+		state = State.MOVING_TO_TREE
+	else:
+		target_tree = null
+		state = State.IDLE
+		_scan_timer = 0.0
+
+func _find_nearest_tree() -> ChoppableTree:
+	var best: ChoppableTree = null
+	var best_dist := sight_range
+	for t in get_tree().get_nodes_in_group("trees"):
+		var d := global_position.distance_to(t.global_position)
+		if d < best_dist:
+			best_dist = d
+			best = t
+	return best
+	
 func _finish_command() -> void:
 	_stop_horizontal()
 	_hide_move_marker()
@@ -204,7 +276,6 @@ func _fire_valid() -> bool:
 
 func _go_idle() -> void:
 	target_fire = null
-	target_obstacle = null
 	state = State.IDLE
 	_scan_timer = 0.0
 
@@ -250,16 +321,14 @@ func _create_selection_ring() -> void:
 	_selection_ring.visible = false
 	add_child(_selection_ring)
 
+func chop_tree(tree: ChoppableTree) -> void:
+	interaction_area.PickupTarget = null
+	target_fire = null
+	_hide_move_marker()
+	target_tree = tree
+	state = State.MOVING_TO_TREE
 
-# --- Clear an obstacle ---
-
-func _process_clearing(delta: float) -> void:
-	_stop_horizontal()
-	if not _obstacle_valid() or not interaction_area.overlaps_body(target_obstacle):
-		_go_idle()
-		return
-	_face(target_obstacle.global_position)
-	target_obstacle.add_work(clear_power * delta)
-
-func _obstacle_valid() -> bool:
-	return is_instance_valid(target_obstacle) and target_obstacle.is_inside_tree()
+func _on_inventory_full() -> void:
+	print("[%s] inventory full" % name)
+	target_tree = null
+	state = State.IDLE

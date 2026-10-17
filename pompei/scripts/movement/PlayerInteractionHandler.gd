@@ -17,7 +17,7 @@ func GetNearestInteractable() -> Node3D:
 	var nearest : Node3D = null
 	var nearestDistance : float = INF
 	for body in get_overlapping_bodies():
-		if not (body is InteractableItem or body is ClearableObstacle):
+		if not (body is InteractableItem ):
 			continue
 		if body.is_queued_for_deletion():
 			continue

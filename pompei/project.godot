@@ -11,17 +11,13 @@ config_version=5
 [application]
 
 config/name="Pompei"
-run/main_scene="uid://bqhhgtlf7y5mf"
+run/main_scene="uid://00wxk2d68ila"
 config/features=PackedStringArray("4.7", "Forward Plus")
 
 [display]
 
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-
-[dotnet]
-
-project/assembly_name="Pompei"
 
 [input]
 
@@ -47,5 +43,4 @@ Interact={
 [rendering]
 
 rendering_device/driver.windows="d3d12"
-renderer/rendering_method="gl_compatibility"
 occlusion_culling/use_occlusion_culling=true
