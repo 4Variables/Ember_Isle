@@ -2,12 +2,13 @@ extends Node3D
 
 @export_flags_3d_physics var ground_collision_mask: int = 1
 @export_flags_3d_physics var player_collision_mask: int = 2
-@export_flags_3d_physics var item_collision_mask: int = 6
+
 @export var inventory_key: Key = KEY_I
 
 @onready var camera_3d: Camera3D = $"../rig/Camera3D"
 @onready var selection_box: Control = $"../SelectionUI/SelectionBox"
 @onready var inventory_hud: InventoryHandler = $"../InventoryHUD/InventoryUI"
+@onready var prompt: Label = $"../PromptUI/InteractionPrompt"
 
 const DRAG_THRESHOLD := 8.0
 
@@ -21,6 +22,9 @@ var inventory_open := false
 # --- Input ---
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("Interact"):
+		interact_with_nearby()
+		return
 	if event is InputEventKey:
 		if event.pressed and not event.echo and event.keycode == inventory_key:
 			toggle_inventory()
@@ -82,12 +86,6 @@ func handle_click(mouse_pos: Vector2) -> void:
 		_on_selection_changed()
 		return
 
-	var item := get_item_at(mouse_pos)
-	if item != null:
-		for p in selected_players:
-			p.pick_up(item)
-		return
-
 	var target = get_ground_position(mouse_pos)
 	if target != null:
 		for p in selected_players:
@@ -117,12 +115,6 @@ func get_player_at(mouse_pos: Vector2) -> CharacterBody3D:
 		node = node.get_parent()
 	return null
 
-
-func get_item_at(mouse_pos: Vector2) -> InteractableItem:
-	var result := _raycast(mouse_pos, item_collision_mask)
-	if result.is_empty():
-		return null
-	return result["collider"] as InteractableItem
 
 
 func get_ground_position(mouse_pos: Vector2) -> Variant:
@@ -183,3 +175,37 @@ func _refresh_inventory() -> void:
 		inventory_hud.ShowInventory(selected_players[0].inventory)
 	else:
 		inventory_hud.ShowInventory(null)
+
+
+func _process(_delta: float) -> void:
+	_update_prompt()
+func _update_prompt() -> void:
+	var nearby := _get_nearby_interactable()
+	if nearby != null:
+		prompt.show_for(nearby, "[%s] %s" % [_interact_key_name(), nearby.interact_prompt])
+	else:
+		prompt.hide_prompt()
+func _get_nearby_interactable() -> Node3D:
+	var best: Node3D = null
+	var best_distance := INF
+	for citizen in selected_players:
+		if not is_instance_valid(citizen):
+			continue
+		var candidate = citizen.interaction_area.GetNearestInteractable()
+		if candidate == null:
+			continue
+		var distance = candidate.global_position.distance_to(citizen.global_position)
+		if distance < best_distance:
+			best = candidate
+			best_distance = distance
+	return best
+func interact_with_nearby() -> void:
+	for citizen in selected_players:
+		if not is_instance_valid(citizen):
+			continue
+		var target = citizen.interaction_area.GetNearestInteractable()
+		if target != null:
+			citizen.interact(target)
+func _interact_key_name() -> String:
+	var events := InputMap.action_get_events("Interact")
+	return events[0].as_text_physical_keycode() if not events.is_empty() else "E"
