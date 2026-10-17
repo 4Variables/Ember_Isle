@@ -151,7 +151,6 @@ script = ExtResource("10_eb6dy")
 [node name="InventoryHUD" type="CanvasLayer" parent="." unique_id=1455473843]
 
 [node name="InventoryUI" type="Control" parent="InventoryHUD" unique_id=682477722 node_paths=PackedStringArray("InventoryGrid")]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -169,9 +168,9 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 49.0
-offset_top = -328.0
-offset_right = 414.0
-offset_bottom = -43.0
+offset_top = -197.0
+offset_right = 327.0
+offset_bottom = -53.0
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_a8y0u")
 
@@ -189,10 +188,11 @@ theme_override_constants/margin_bottom = 5
 
 [node name="GridContainer" type="GridContainer" parent="InventoryHUD/InventoryUI/Panel/MarginContainer" unique_id=1168416339]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 0
+size_flags_vertical = 4
 theme_override_constants/h_separation = 5
 theme_override_constants/v_separation = 5
-columns = 5
+columns = 4
 
 [node name="ItemTestCube" parent="." unique_id=500978851 instance=ExtResource("12_trceg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 89.1042, 0.4811597, 0)
