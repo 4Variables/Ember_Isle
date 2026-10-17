@@ -13,7 +13,6 @@ config_version=5
 config/name="Pompei"
 run/main_scene="uid://bqhhgtlf7y5mf"
 config/features=PackedStringArray("4.7", "Forward Plus")
-config/icon="res://icon.svg"
 
 [display]
 

@@ -1,0 +1,249 @@
+[gd_scene format=3 uid="uid://bqhhgtlf7y5mf"]
+
+[ext_resource type="Script" uid="uid://drf1qq2ukjswe" path="res://scripts/fire_spawner.gd" id="1_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://si5prvgmosvj" path="res://scenes/fire.tscn" id="2_lquwl"]
+[ext_resource type="Script" uid="uid://n40h4ykb87xa" path="res://scripts/camera_rig.gd" id="3_7mycd"]
+[ext_resource type="PackedScene" uid="uid://q70kyjxn5ebo" path="res://scenes/volcano.tscn" id="4_272bh"]
+[ext_resource type="Script" uid="uid://cpk54pqnwrhl8" path="res://scripts/spawn_area.gd" id="5_7mycd"]
+[ext_resource type="Script" uid="uid://cijgfh3163jdc" path="res://scripts/npc_spawner.gd" id="6_272bh"]
+[ext_resource type="Script" uid="uid://gkpda1b2nl3p" path="res://scripts/npcspawnentry.gd" id="7_5vw27"]
+[ext_resource type="PackedScene" uid="uid://bl4wemqn5wyfe" path="res://scenes/npc.tscn" id="8_kek77"]
+[ext_resource type="Script" uid="uid://b5tkc0gwg8wjc" path="res://scripts/movement/selection_controller.gd" id="9_ya4ey"]
+[ext_resource type="Script" uid="uid://dkmugqb6km7je" path="res://scripts/movement/selection_box.gd" id="10_eb6dy"]
+[ext_resource type="Script" uid="uid://b84yciuvjyxd1" path="res://Inventory/InventoryHandler.gd" id="11_trceg"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gu245"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_3dejo"]
+sky_material = SubResource("ProceduralSkyMaterial_gu245")
+
+[sub_resource type="Environment" id="Environment_yrdue"]
+background_mode = 2
+sky = SubResource("Sky_3dejo")
+glow_enabled = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_fr0e3"]
+size = Vector3(2.6329346, 2.9794922, 5.835083)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vw27"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Resource" id="Resource_fr0e3"]
+script = ExtResource("7_5vw27")
+npc_scene = ExtResource("8_kek77")
+area_name = &"hospital"
+metadata/_custom_type_script = "uid://gkpda1b2nl3p"
+
+[sub_resource type="Resource" id="Resource_4kra6"]
+script = ExtResource("7_5vw27")
+npc_scene = ExtResource("8_kek77")
+area_name = &"mosque"
+metadata/_custom_type_script = "uid://gkpda1b2nl3p"
+
+[sub_resource type="Resource" id="Resource_n30i3"]
+script = ExtResource("7_5vw27")
+npc_scene = ExtResource("8_kek77")
+area_name = &"well"
+metadata/_custom_type_script = "uid://gkpda1b2nl3p"
+
+[sub_resource type="Resource" id="Resource_8ye3a"]
+script = ExtResource("7_5vw27")
+npc_scene = ExtResource("8_kek77")
+area_name = &"shop"
+metadata/_custom_type_script = "uid://gkpda1b2nl3p"
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_rsry2"]
+vertices = PackedVector3Array(203.00003, 0.359375, -205.99997, 203.50003, 0.359375, -206.24997, 203.50003, 0.359375, -299.49997, -299.49997, 0.359375, -299.49997, 203.50003, 0.359375, 299.50003, 203.50003, 0.359375, 195.50003, 203.00003, 0.359375, 195.25003, -299.49997, 0.359375, 299.50003, 204.25003, 0.359375, -205.99997, 299.50003, 0.359375, -204.74997, 299.50003, 0.359375, -299.49997, 204.25003, 0.359375, -204.49997, 204.25003, 0.359375, 193.75003, 299.50003, 0.359375, 194.00003, 204.25003, 0.359375, 195.25003, 299.50003, 0.359375, 299.50003)
+polygons = [PackedInt32Array(1, 0, 2), PackedInt32Array(2, 0, 3), PackedInt32Array(5, 4, 6), PackedInt32Array(6, 4, 7), PackedInt32Array(0, 6, 3), PackedInt32Array(3, 6, 7), PackedInt32Array(1, 2, 8), PackedInt32Array(8, 2, 10), PackedInt32Array(8, 10, 9), PackedInt32Array(9, 11, 8), PackedInt32Array(11, 9, 12), PackedInt32Array(12, 9, 13), PackedInt32Array(14, 12, 13), PackedInt32Array(14, 13, 5), PackedInt32Array(5, 13, 4), PackedInt32Array(4, 13, 15)]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_fr0e3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4kra6"]
+albedo_color = Color(0.6772433, 0.45101857, 0.080106355, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ya4ey"]
+size = Vector3(2, 0.001, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a8y0u"]
+bg_color = Color(0.223238, 0.24924, 0.26794, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0.8, 0.8, 0.129412)
+border_blend = true
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.168627)
+shadow_size = 3
+shadow_offset = Vector2(-1, 3)
+
+[node name="pompei" type="Node3D" unique_id=715505370]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=235379903]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1862398474]
+environment = SubResource("Environment_yrdue")
+
+[node name="fire spawner" type="Node3D" parent="." unique_id=508946502]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.355499, 0, 0)
+script = ExtResource("1_1bvp3")
+fire_scene = ExtResource("2_lquwl")
+
+[node name="Timer" type="Timer" parent="fire spawner" unique_id=2009468448]
+one_shot = true
+
+[node name="rig" type="Node3D" parent="." unique_id=1118138481]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 45, 0)
+script = ExtResource("3_7mycd")
+
+[node name="Camera3D" type="Camera3D" parent="rig" unique_id=1308377543]
+transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 20, 34.6)
+projection = 1
+size = 20.0
+near = 0.1
+far = 200.0
+
+[node name="volcanicmountain" parent="." unique_id=862375047 instance=ExtResource("4_272bh")]
+
+[node name="hospital" type="Node3D" parent="." unique_id=518792409]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.56623, 0, -47.857616)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="hospital" unique_id=91309996]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8164673, 0.9897461, -0.97698975)
+mesh = SubResource("BoxMesh_fr0e3")
+surface_material_override/0 = SubResource("StandardMaterial3D_5vw27")
+
+[node name="SpawnArea" type="Marker3D" parent="hospital" unique_id=501591358]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.934208, 0, 0)
+script = ExtResource("5_7mycd")
+area_name = &"hospital"
+
+[node name="mosque" type="Node3D" parent="." unique_id=919711513]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.56623, 0, -28.850807)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="mosque" unique_id=111522204]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8164673, 0.9897461, -0.97698975)
+mesh = SubResource("BoxMesh_fr0e3")
+surface_material_override/0 = SubResource("StandardMaterial3D_5vw27")
+
+[node name="SpawnArea" type="Marker3D" parent="mosque" unique_id=507230602]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.934208, 0, 0)
+script = ExtResource("5_7mycd")
+area_name = &"mosque"
+
+[node name="well" type="Node3D" parent="." unique_id=2030447373]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.56623, 0, 2.5142784)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="well" unique_id=1442369632]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8164673, 0.9897461, -0.97698975)
+mesh = SubResource("BoxMesh_fr0e3")
+surface_material_override/0 = SubResource("StandardMaterial3D_5vw27")
+
+[node name="SpawnArea" type="Marker3D" parent="well" unique_id=1161532165]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.934208, 0, 0)
+script = ExtResource("5_7mycd")
+area_name = &"well"
+
+[node name="shop" type="Node3D" parent="." unique_id=492373881]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.56623, 0, 32.954266)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="shop" unique_id=2083763399]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8164673, 0.9897461, -0.97698975)
+mesh = SubResource("BoxMesh_fr0e3")
+surface_material_override/0 = SubResource("StandardMaterial3D_5vw27")
+
+[node name="SpawnArea" type="Marker3D" parent="shop" unique_id=553658126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.934208, 0, 0)
+script = ExtResource("5_7mycd")
+area_name = &"shop"
+
+[node name="NpcSpawner" type="Node" parent="." unique_id=1853373462]
+script = ExtResource("6_272bh")
+entries = Array[ExtResource("7_5vw27")]([SubResource("Resource_fr0e3"), SubResource("Resource_4kra6"), SubResource("Resource_n30i3"), SubResource("Resource_8ye3a")])
+metadata/_custom_type_script = "uid://cijgfh3163jdc"
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=350797246]
+navigation_mesh = SubResource("NavigationMesh_rsry2")
+
+[node name="ground" type="StaticBody3D" parent="NavigationRegion3D" unique_id=273801337]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+collision_mask = 14
+
+[node name="floor" type="MeshInstance3D" parent="NavigationRegion3D/ground" unique_id=1418090576]
+transform = Transform3D(29.999998, 0, 0, 0, 29.999998, 0, 0, 0, 29.999998, 0, 0, 0)
+mesh = SubResource("PlaneMesh_fr0e3")
+surface_material_override/0 = SubResource("StandardMaterial3D_4kra6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/ground" unique_id=2097865395]
+transform = Transform3D(29.999998, 0, 0, 0, 29.999998, 0, 0, 0, 29.999998, 0, 0, 0)
+shape = SubResource("BoxShape3D_ya4ey")
+
+[node name="SelectionController" type="Node3D" parent="." unique_id=366853255]
+script = ExtResource("9_ya4ey")
+player_collision_mask = 4
+item_collision_mask = 16
+
+[node name="SelectionUI" type="CanvasLayer" parent="." unique_id=207209372]
+
+[node name="SelectionBox" type="Control" parent="SelectionUI" unique_id=823523958]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("10_eb6dy")
+
+[node name="InventoryHUD" type="CanvasLayer" parent="." unique_id=1455473843]
+
+[node name="InventoryUI" type="Control" parent="InventoryHUD" unique_id=682477722 node_paths=PackedStringArray("InventoryGrid")]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("11_trceg")
+InventoryGrid = NodePath("Panel/MarginContainer/GridContainer")
+
+[node name="Panel" type="Panel" parent="InventoryHUD/InventoryUI" unique_id=899950908]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 49.0
+offset_top = -328.0
+offset_right = 414.0
+offset_bottom = -43.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_a8y0u")
+
+[node name="MarginContainer" type="MarginContainer" parent="InventoryHUD/InventoryUI/Panel" unique_id=337931439]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="GridContainer" type="GridContainer" parent="InventoryHUD/InventoryUI/Panel/MarginContainer" unique_id=1168416339]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 5
+theme_override_constants/v_separation = 5
+columns = 5

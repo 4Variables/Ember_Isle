@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://d3jlwbltj3jd7"]
+
+[ext_resource type="PackedScene" uid="uid://d3jlwbltj3jd7" path="res://scenes/fire_particle.tscn" id="1_le575"]
+
+[node name="Node3D" type="Node3D" unique_id=272675364]
+
+[node name="GPUParticles3D" parent="." unique_id=1291696781 instance=ExtResource("1_le575")]
+amount = 50
+lifetime = 1.2

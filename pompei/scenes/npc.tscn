@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://bl4wemqn5wyfe"]
+
+[ext_resource type="Script" uid="uid://bltfy4xv7tmho" path="res://scripts/npc.gd" id="1_ideak"]
+[ext_resource type="Script" uid="uid://bywbl1xi00468" path="res://scripts/movement/PlayerInteractionHandler.gd" id="2_tl2vt"]
+[ext_resource type="Script" uid="uid://css7482j4jld8" path="res://Inventory/ItemData.gd" id="3_hwkja"]
+[ext_resource type="Resource" path="res://Inventory/Items/TestCube.tres" id="4_0tygy"]
+[ext_resource type="Resource" path="res://Inventory/Items/TestSphere.tres" id="5_sptji"]
+[ext_resource type="Script" uid="uid://d3qbykqrcq52" path="res://Inventory/CitizenInventory.gd" id="6_v4e37"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_fr0e3"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fr0e3"]
+
+[sub_resource type="TorusMesh" id="TorusMesh_1h837"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_gl1un"]
+radius = 1.2
+
+[node name="npc" type="CharacterBody3D" unique_id=1712775677]
+collision_layer = 4
+collision_mask = 15
+script = ExtResource("1_ideak")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1817406816]
+mesh = SubResource("CapsuleMesh_fr0e3")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=590490076]
+shape = SubResource("CapsuleShape3D_fr0e3")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=63817385]
+avoidance_enabled = true
+debug_enabled = true
+
+[node name="SelectionIndicator" type="MeshInstance3D" parent="." unique_id=1576567917]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, -0.4863944, 0)
+mesh = SubResource("TorusMesh_1h837")
+
+[node name="InteractionArea" type="Area3D" parent="." unique_id=746682578]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("2_tl2vt")
+ItemTypes = Array[ExtResource("3_hwkja")]([ExtResource("4_0tygy"), ExtResource("5_sptji")])
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea" unique_id=815126464]
+shape = SubResource("SphereShape3D_gl1un")
+
+[node name="Inventory" type="Node" parent="." unique_id=1094765424]
+script = ExtResource("6_v4e37")

@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cmad2p3jpgtq1"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_fr0e3"]
+size = Vector3(2.6329346, 2.9794922, 5.835083)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vw27"]
+albedo_color = Color(0, 0, 0, 1)
+
+[node name="house" type="Node3D" unique_id=518792409]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=91309996]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8164673, 1.4929727, -0.97698975)
+mesh = SubResource("BoxMesh_fr0e3")
+surface_material_override/0 = SubResource("StandardMaterial3D_5vw27")
+
+[node name="SpawnArea" type="Marker3D" parent="." unique_id=501591358]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.50322664, 0)
