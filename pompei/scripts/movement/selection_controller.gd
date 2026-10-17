@@ -2,7 +2,7 @@ extends Node3D
 
 @export_flags_3d_physics var ground_collision_mask: int = 1
 @export_flags_3d_physics var player_collision_mask: int = 2
-@export_flags_3d_physics var item_collision_mask: int = 4
+@export_flags_3d_physics var item_collision_mask: int = 6
 @export var inventory_key: Key = KEY_I
 
 @onready var camera_3d: Camera3D = $"../rig/Camera3D"

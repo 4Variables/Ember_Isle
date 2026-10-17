@@ -25,6 +25,8 @@ window/stretch/aspect="expand"
 3d_physics/layer_2="trees"
 3d_physics/layer_3="npcs"
 3d_physics/layer_4="fire"
+3d_physics/layer_5="houses"
+3d_physics/layer_6="interactable"
 
 [physics]
 

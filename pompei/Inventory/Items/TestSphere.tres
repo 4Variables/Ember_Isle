@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ItemData" format=3]
 
 [ext_resource type="Script" uid="uid://css7482j4jld8" path="res://Inventory/ItemData.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://dmm2hx7m8xjq5" path="res://Textures/SphereIcon.png" id="2_icon"]
+[ext_resource type="Texture2D" uid="uid://dmm2hx7m8xjq5" path="res://textures/SphereIcon.png" id="2_icon"]
 [ext_resource type="PackedScene" uid="uid://dcig5eot87p8w" path="res://Inventory/TestSphere.tscn" id="3_scene"]
 
 [resource]

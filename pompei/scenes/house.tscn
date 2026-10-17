@@ -1,13 +1,20 @@
 [gd_scene format=3 uid="uid://cmad2p3jpgtq1"]
 
+[ext_resource type="Script" uid="uid://cpk54pqnwrhl8" path="res://scripts/spawn_area.gd" id="1_d7po0"]
+
 [sub_resource type="BoxMesh" id="BoxMesh_fr0e3"]
 size = Vector3(2.6329346, 2.9794922, 5.835083)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vw27"]
 albedo_color = Color(0, 0, 0, 1)
 
-[node name="house" type="Node3D" unique_id=518792409]
+[sub_resource type="BoxShape3D" id="BoxShape3D_fr0e3"]
+size = Vector3(2.6795654, 3.0867767, 5.945862)
+
+[node name="house" type="StaticBody3D" unique_id=1043455610]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+collision_layer = 16
+collision_mask = 5
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=91309996]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8164673, 1.4929727, -0.97698975)
@@ -16,3 +23,8 @@ surface_material_override/0 = SubResource("StandardMaterial3D_5vw27")
 
 [node name="SpawnArea" type="Marker3D" parent="." unique_id=501591358]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.50322664, 0)
+script = ExtResource("1_d7po0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1717443706]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8397827, 1.4951248, -0.9630432)
+shape = SubResource("BoxShape3D_fr0e3")

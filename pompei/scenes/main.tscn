@@ -4,13 +4,15 @@
 [ext_resource type="PackedScene" uid="uid://si5prvgmosvj" path="res://scenes/fire.tscn" id="2_lquwl"]
 [ext_resource type="Script" uid="uid://n40h4ykb87xa" path="res://scripts/camera_rig.gd" id="3_7mycd"]
 [ext_resource type="PackedScene" uid="uid://q70kyjxn5ebo" path="res://scenes/volcano.tscn" id="4_272bh"]
-[ext_resource type="Script" uid="uid://cpk54pqnwrhl8" path="res://scripts/spawn_area.gd" id="5_7mycd"]
 [ext_resource type="Script" uid="uid://cijgfh3163jdc" path="res://scripts/npc_spawner.gd" id="6_272bh"]
 [ext_resource type="Script" uid="uid://gkpda1b2nl3p" path="res://scripts/npcspawnentry.gd" id="7_5vw27"]
 [ext_resource type="PackedScene" uid="uid://bl4wemqn5wyfe" path="res://scenes/npc.tscn" id="8_kek77"]
 [ext_resource type="Script" uid="uid://b5tkc0gwg8wjc" path="res://scripts/movement/selection_controller.gd" id="9_ya4ey"]
 [ext_resource type="Script" uid="uid://dkmugqb6km7je" path="res://scripts/movement/selection_box.gd" id="10_eb6dy"]
 [ext_resource type="Script" uid="uid://b84yciuvjyxd1" path="res://Inventory/InventoryHandler.gd" id="11_trceg"]
+[ext_resource type="PackedScene" uid="uid://cmad2p3jpgtq1" path="res://scenes/house.tscn" id="11_ya4ey"]
+[ext_resource type="PackedScene" uid="uid://cuiklvlmyu8n6" path="res://Inventory/TestCube.tscn" id="12_trceg"]
+[ext_resource type="PackedScene" uid="uid://dcig5eot87p8w" path="res://Inventory/TestSphere.tscn" id="13_a8y0u"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gu245"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -24,12 +26,6 @@ background_mode = 2
 sky = SubResource("Sky_3dejo")
 glow_enabled = true
 
-[sub_resource type="BoxMesh" id="BoxMesh_fr0e3"]
-size = Vector3(2.6329346, 2.9794922, 5.835083)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vw27"]
-albedo_color = Color(0, 0, 0, 1)
-
 [sub_resource type="Resource" id="Resource_fr0e3"]
 script = ExtResource("7_5vw27")
 npc_scene = ExtResource("8_kek77")
@@ -39,24 +35,12 @@ metadata/_custom_type_script = "uid://gkpda1b2nl3p"
 [sub_resource type="Resource" id="Resource_4kra6"]
 script = ExtResource("7_5vw27")
 npc_scene = ExtResource("8_kek77")
-area_name = &"mosque"
-metadata/_custom_type_script = "uid://gkpda1b2nl3p"
-
-[sub_resource type="Resource" id="Resource_n30i3"]
-script = ExtResource("7_5vw27")
-npc_scene = ExtResource("8_kek77")
-area_name = &"well"
-metadata/_custom_type_script = "uid://gkpda1b2nl3p"
-
-[sub_resource type="Resource" id="Resource_8ye3a"]
-script = ExtResource("7_5vw27")
-npc_scene = ExtResource("8_kek77")
-area_name = &"shop"
+area_name = &"station"
 metadata/_custom_type_script = "uid://gkpda1b2nl3p"
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_rsry2"]
-vertices = PackedVector3Array(203.00003, 0.359375, -205.99997, 203.50003, 0.359375, -206.24997, 203.50003, 0.359375, -299.49997, -299.49997, 0.359375, -299.49997, 203.50003, 0.359375, 299.50003, 203.50003, 0.359375, 195.50003, 203.00003, 0.359375, 195.25003, -299.49997, 0.359375, 299.50003, 204.25003, 0.359375, -205.99997, 299.50003, 0.359375, -204.74997, 299.50003, 0.359375, -299.49997, 204.25003, 0.359375, -204.49997, 204.25003, 0.359375, 193.75003, 299.50003, 0.359375, 194.00003, 204.25003, 0.359375, 195.25003, 299.50003, 0.359375, 299.50003)
-polygons = [PackedInt32Array(1, 0, 2), PackedInt32Array(2, 0, 3), PackedInt32Array(5, 4, 6), PackedInt32Array(6, 4, 7), PackedInt32Array(0, 6, 3), PackedInt32Array(3, 6, 7), PackedInt32Array(1, 2, 8), PackedInt32Array(8, 2, 10), PackedInt32Array(8, 10, 9), PackedInt32Array(9, 11, 8), PackedInt32Array(11, 9, 12), PackedInt32Array(12, 9, 13), PackedInt32Array(14, 12, 13), PackedInt32Array(14, 13, 5), PackedInt32Array(5, 13, 4), PackedInt32Array(4, 13, 15)]
+vertices = PackedVector3Array(-299.49997, 0.6, -9.2499695, -10.7499695, 0.6, -8.9999695, -10.7499695, 0.6, -10.4999695, -8.9999695, 0.6, -10.7499695, -9.2499695, 0.6, -299.49997, -299.49997, 0.6, -299.49997, 8.7500305, 0.6, -10.7499695, 9.0000305, 0.6, -299.49997, 107.00003, 0.6, 25.50003, 107.25003, 0.6, 26.00003, 122.75003, 0.6, 6.7500305, 122.25003, 0.6, 6.5000305, 10.5000305, 0.6, -10.4999695, 122.25003, 0.6, -12.2499695, 124.50003, 0.6, -12.4999695, 124.50003, 0.6, -299.49997, 98.50003, 0.6, 25.50003, 10.5000305, 0.6, 10.0000305, 129.25003, 0.6, -12.4999695, 129.25003, 0.6, -299.49997, 131.25003, 0.6, -12.4999695, 131.50003, 0.6, -10.2499695, 299.50003, 0.6, -10.2499695, 299.50003, 0.6, -299.49997, 123.25003, 9.6, -11.4999695, 123.25003, 9.6, 5.7500305, 130.50003, 9.6, 5.7500305, 130.50003, 9.6, -11.4999695, 123.50003, 0.6, -10.9999695, 123.50003, 0.6, 5.2500305, 130.00003, 0.6, 5.2500305, 130.00003, 0.6, -10.9999695, 131.50003, 0.6, 4.5000305, 299.50003, 0.6, 4.5000305, -9.7499695, 20.35, -9.7499695, -9.7499695, 20.35, 9.5000305, 9.5000305, 20.35, 9.5000305, 9.5000305, 20.35, -9.7499695, -8.4999695, 0.6, -9.4999695, -8.4999695, 0.6, 9.2500305, 8.5000305, 0.6, 9.2500305, 8.5000305, 0.6, -9.4999695, -299.49997, 0.6, 9.0000305, -10.7499695, 0.6, 8.7500305, 131.25003, 0.6, 6.7500305, 107.25003, 0.6, 44.25003, 105.00003, 0.6, 44.50003, 105.00003, 0.6, 299.50003, 299.50003, 0.6, 299.50003, -10.4999695, 0.6, 10.5000305, -299.49997, 0.6, 299.50003, -8.4999695, 0.6, 299.50003, -8.4999695, 0.6, 10.5000305, 98.00003, 0.6, 26.00003, 10.0000305, 0.6, 10.5000305, 8.2500305, 0.6, 299.50003, 8.2500305, 0.6, 10.5000305, 98.00003, 0.6, 44.25003, 100.25003, 0.6, 299.50003, 100.25003, 0.6, 44.50003, 99.00003, 9.6, 26.50003, 99.00003, 9.6, 43.50003, 106.25003, 9.6, 43.50003, 106.25003, 9.6, 26.50003, 99.25003, 0.6, 26.75003, 99.25003, 0.6, 43.25003, 105.75003, 0.6, 43.25003, 105.75003, 0.6, 26.75003)
+polygons = [PackedInt32Array(2, 1, 0), PackedInt32Array(3, 2, 4), PackedInt32Array(4, 2, 5), PackedInt32Array(5, 2, 0), PackedInt32Array(3, 4, 6), PackedInt32Array(6, 4, 7), PackedInt32Array(11, 10, 8), PackedInt32Array(8, 10, 9), PackedInt32Array(12, 6, 13), PackedInt32Array(13, 6, 14), PackedInt32Array(14, 6, 15), PackedInt32Array(15, 6, 7), PackedInt32Array(8, 16, 11), PackedInt32Array(11, 16, 13), PackedInt32Array(13, 16, 17), PackedInt32Array(13, 17, 12), PackedInt32Array(15, 19, 14), PackedInt32Array(14, 19, 18), PackedInt32Array(21, 20, 22), PackedInt32Array(22, 20, 23), PackedInt32Array(23, 20, 19), PackedInt32Array(20, 18, 19), PackedInt32Array(27, 26, 24), PackedInt32Array(24, 26, 25), PackedInt32Array(31, 30, 28), PackedInt32Array(28, 30, 29), PackedInt32Array(21, 22, 32), PackedInt32Array(32, 22, 33), PackedInt32Array(37, 36, 34), PackedInt32Array(34, 36, 35), PackedInt32Array(41, 40, 38), PackedInt32Array(38, 40, 39), PackedInt32Array(43, 42, 1), PackedInt32Array(1, 42, 0), PackedInt32Array(10, 44, 9), PackedInt32Array(9, 44, 45), PackedInt32Array(47, 46, 45), PackedInt32Array(44, 32, 33), PackedInt32Array(44, 33, 45), PackedInt32Array(45, 33, 47), PackedInt32Array(47, 33, 48), PackedInt32Array(43, 49, 42), PackedInt32Array(42, 49, 50), PackedInt32Array(50, 49, 51), PackedInt32Array(49, 52, 51), PackedInt32Array(54, 17, 53), PackedInt32Array(53, 17, 16), PackedInt32Array(52, 56, 51), PackedInt32Array(51, 56, 55), PackedInt32Array(54, 53, 56), PackedInt32Array(56, 53, 57), PackedInt32Array(58, 55, 57), PackedInt32Array(57, 55, 56), PackedInt32Array(58, 57, 59), PackedInt32Array(63, 62, 60), PackedInt32Array(60, 62, 61), PackedInt32Array(67, 66, 64), PackedInt32Array(64, 66, 65), PackedInt32Array(59, 46, 58), PackedInt32Array(58, 46, 47)]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_fr0e3"]
 
@@ -110,67 +94,27 @@ size = 20.0
 near = 0.1
 far = 200.0
 
-[node name="volcanicmountain" parent="." unique_id=862375047 instance=ExtResource("4_272bh")]
-
-[node name="hospital" type="Node3D" parent="." unique_id=518792409]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.56623, 0, -47.857616)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="hospital" unique_id=91309996]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8164673, 0.9897461, -0.97698975)
-mesh = SubResource("BoxMesh_fr0e3")
-surface_material_override/0 = SubResource("StandardMaterial3D_5vw27")
-
-[node name="SpawnArea" type="Marker3D" parent="hospital" unique_id=501591358]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.934208, 0, 0)
-script = ExtResource("5_7mycd")
-area_name = &"hospital"
-
-[node name="mosque" type="Node3D" parent="." unique_id=919711513]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.56623, 0, -28.850807)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="mosque" unique_id=111522204]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8164673, 0.9897461, -0.97698975)
-mesh = SubResource("BoxMesh_fr0e3")
-surface_material_override/0 = SubResource("StandardMaterial3D_5vw27")
-
-[node name="SpawnArea" type="Marker3D" parent="mosque" unique_id=507230602]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.934208, 0, 0)
-script = ExtResource("5_7mycd")
-area_name = &"mosque"
-
-[node name="well" type="Node3D" parent="." unique_id=2030447373]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.56623, 0, 2.5142784)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="well" unique_id=1442369632]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8164673, 0.9897461, -0.97698975)
-mesh = SubResource("BoxMesh_fr0e3")
-surface_material_override/0 = SubResource("StandardMaterial3D_5vw27")
-
-[node name="SpawnArea" type="Marker3D" parent="well" unique_id=1161532165]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.934208, 0, 0)
-script = ExtResource("5_7mycd")
-area_name = &"well"
-
-[node name="shop" type="Node3D" parent="." unique_id=492373881]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.56623, 0, 32.954266)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="shop" unique_id=2083763399]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8164673, 0.9897461, -0.97698975)
-mesh = SubResource("BoxMesh_fr0e3")
-surface_material_override/0 = SubResource("StandardMaterial3D_5vw27")
-
-[node name="SpawnArea" type="Marker3D" parent="shop" unique_id=553658126]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.934208, 0, 0)
-script = ExtResource("5_7mycd")
-area_name = &"shop"
-
 [node name="NpcSpawner" type="Node" parent="." unique_id=1853373462]
 script = ExtResource("6_272bh")
-entries = Array[ExtResource("7_5vw27")]([SubResource("Resource_fr0e3"), SubResource("Resource_4kra6"), SubResource("Resource_n30i3"), SubResource("Resource_8ye3a")])
+entries = Array[ExtResource("7_5vw27")]([SubResource("Resource_fr0e3"), SubResource("Resource_4kra6")])
 metadata/_custom_type_script = "uid://cijgfh3163jdc"
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=350797246]
 navigation_mesh = SubResource("NavigationMesh_rsry2")
+
+[node name="hospital" parent="NavigationRegion3D" unique_id=1043455610 instance=ExtResource("11_ya4ey")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 124.32031, 0, 0)
+
+[node name="SpawnArea" parent="NavigationRegion3D/hospital" index="1" unique_id=501591358]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2284698, 0.50322664, 0)
+area_name = &"hospital"
+
+[node name="station" parent="NavigationRegion3D" unique_id=1897102987 instance=ExtResource("11_ya4ey")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 100.00432, 0, 37.931175)
+
+[node name="SpawnArea" parent="NavigationRegion3D/station" index="1" unique_id=501591358]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1594582, 0.50322664, 0)
+area_name = &"station"
 
 [node name="ground" type="StaticBody3D" parent="NavigationRegion3D" unique_id=273801337]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
@@ -185,10 +129,12 @@ surface_material_override/0 = SubResource("StandardMaterial3D_4kra6")
 transform = Transform3D(29.999998, 0, 0, 0, 29.999998, 0, 0, 0, 29.999998, 0, 0, 0)
 shape = SubResource("BoxShape3D_ya4ey")
 
+[node name="volcanicmountain" parent="NavigationRegion3D" unique_id=862375047 instance=ExtResource("4_272bh")]
+
 [node name="SelectionController" type="Node3D" parent="." unique_id=366853255]
 script = ExtResource("9_ya4ey")
 player_collision_mask = 4
-item_collision_mask = 16
+item_collision_mask = 32
 
 [node name="SelectionUI" type="CanvasLayer" parent="." unique_id=207209372]
 
@@ -247,3 +193,12 @@ size_flags_horizontal = 4
 theme_override_constants/h_separation = 5
 theme_override_constants/v_separation = 5
 columns = 5
+
+[node name="ItemTestCube" parent="." unique_id=500978851 instance=ExtResource("12_trceg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 89.1042, 0.4811597, 0)
+
+[node name="ItemTestCube2" parent="." unique_id=328940873 instance=ExtResource("13_a8y0u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.47369, 0.33697915, -7.378543)
+
+[editable path="NavigationRegion3D/hospital"]
+[editable path="NavigationRegion3D/station"]
