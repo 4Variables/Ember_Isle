@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://cijgfh3163jdc" path="res://scripts/npc_spawner.gd" id="6_272bh"]
 [ext_resource type="Script" uid="uid://gkpda1b2nl3p" path="res://scripts/npcspawnentry.gd" id="7_5vw27"]
 [ext_resource type="PackedScene" uid="uid://bl4wemqn5wyfe" path="res://scenes/npc.tscn" id="8_kek77"]
+[ext_resource type="PackedScene" uid="uid://lfdlknit04v0" path="res://Obstacles/obstacle.tscn" id="9_jbj1t"]
 [ext_resource type="Script" uid="uid://b5tkc0gwg8wjc" path="res://scripts/movement/selection_controller.gd" id="9_ya4ey"]
 [ext_resource type="Script" uid="uid://dkmugqb6km7je" path="res://scripts/movement/selection_box.gd" id="10_eb6dy"]
 [ext_resource type="Script" uid="uid://b84yciuvjyxd1" path="res://Inventory/InventoryHandler.gd" id="11_trceg"]
@@ -14,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://cuiklvlmyu8n6" path="res://Inventory/TestCube.tscn" id="12_trceg"]
 [ext_resource type="PackedScene" uid="uid://dcig5eot87p8w" path="res://Inventory/TestSphere.tscn" id="13_a8y0u"]
 [ext_resource type="Texture2D" uid="uid://dtan4nrpyrgej" path="res://textures/IMG_1698.png" id="14_a8y0u"]
+[ext_resource type="Script" uid="uid://dk6c2su4lf514" path="res://scripts/interaction_prompt.gd" id="15_jkv2x"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gu245"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -139,10 +141,20 @@ shape = SubResource("BoxShape3D_ya4ey")
 
 [node name="volcanicmountain" parent="NavigationRegion3D" unique_id=862375047 instance=ExtResource("4_272bh")]
 
+[node name="FallenTree3" parent="NavigationRegion3D" unique_id=1202848929 instance=ExtResource("9_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.140816, 0.31986046, 45.17072)
+
+[node name="Node3D" type="Node3D" parent="NavigationRegion3D" unique_id=122342950]
+
+[node name="FallenTree" parent="NavigationRegion3D/Node3D" unique_id=805065797 instance=ExtResource("9_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.759598, 0.31986046, 24.213291)
+
+[node name="FallenTree2" parent="NavigationRegion3D/Node3D" unique_id=1997542813 instance=ExtResource("9_jbj1t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.759598, 0.31986046, 45.17072)
+
 [node name="SelectionController" type="Node3D" parent="." unique_id=366853255]
 script = ExtResource("9_ya4ey")
 player_collision_mask = 4
-item_collision_mask = 32
 
 [node name="SelectionUI" type="CanvasLayer" parent="." unique_id=207209372]
 
@@ -212,6 +224,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.47369, 0.33697915, -7.3785
 transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 18.214478, 29.379416, 0)
 mesh = SubResource("QuadMesh_fr0e3")
 surface_material_override/0 = SubResource("StandardMaterial3D_rsry2")
+
+[node name="PromptUI" type="CanvasLayer" parent="." unique_id=1314573315]
+
+[node name="InteractionPrompt" type="Label" parent="PromptUI" unique_id=1668835360]
+offset_right = 40.0
+offset_bottom = 23.0
+script = ExtResource("15_jkv2x")
 
 [editable path="NavigationRegion3D/hospital"]
 [editable path="NavigationRegion3D/station"]

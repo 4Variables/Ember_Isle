@@ -1,7 +1,10 @@
 class_name Npc
 extends CharacterBody3D
 
-enum State { IDLE, MOVING_TO_FIRE, EXTINGUISHING, COMMANDED }
+enum State { IDLE, MOVING_TO_FIRE, EXTINGUISHING, COMMANDED, CLEARING }
+
+@export var clear_power := 1.0           # work done on obstacles per second
+var target_obstacle: ClearableObstacle
 
 signal movement_completed(citizen: CharacterBody3D)
 
@@ -79,8 +82,8 @@ func set_selected(value: bool) -> void:
 	_selection_ring.visible = value
 
 func move_to(target: Vector3, show_marker := true) -> void:
-	interaction_area.PickupTarget = null
 	target_fire = null
+	target_obstacle = null
 	state = State.COMMANDED
 	navigation_agent_3d.target_position = target
 	if show_marker:
@@ -89,9 +92,14 @@ func move_to(target: Vector3, show_marker := true) -> void:
 		_hide_move_marker()
 
 
-func pick_up(item: InteractableItem) -> void:
-	move_to(item.global_position)
-	interaction_area.SetPickupTarget(item)
+func interact(target: Node3D) -> void:
+	if target is InteractableItem:
+		interaction_area.TryPickup(target as InteractableItem)
+	elif target is ClearableObstacle:
+		target_fire = null
+		target_obstacle = target as ClearableObstacle
+		state = State.CLEARING
+		_hide_move_marker()
 
 # Health.
 func take_damage(amount: float) -> void:
@@ -114,6 +122,8 @@ func _physics_process(delta: float) -> void:
 			_process_moving_to_fire()
 		State.EXTINGUISHING:
 			_process_extinguishing(delta)
+		State.CLEARING:
+			_process_clearing(delta)
 
 	move_and_slide()
 
@@ -194,6 +204,7 @@ func _fire_valid() -> bool:
 
 func _go_idle() -> void:
 	target_fire = null
+	target_obstacle = null
 	state = State.IDLE
 	_scan_timer = 0.0
 
@@ -238,3 +249,17 @@ func _create_selection_ring() -> void:
 	_selection_ring.position = Vector3(0.0, ring_height, 0.0)
 	_selection_ring.visible = false
 	add_child(_selection_ring)
+
+
+# --- Clear an obstacle ---
+
+func _process_clearing(delta: float) -> void:
+	_stop_horizontal()
+	if not _obstacle_valid() or not interaction_area.overlaps_body(target_obstacle):
+		_go_idle()
+		return
+	_face(target_obstacle.global_position)
+	target_obstacle.add_work(clear_power * delta)
+
+func _obstacle_valid() -> bool:
+	return is_instance_valid(target_obstacle) and target_obstacle.is_inside_tree()
