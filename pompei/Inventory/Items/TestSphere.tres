@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="ItemData" format=3]
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://b2uicw30f2cjm"]
 
+[ext_resource type="Texture2D" uid="uid://dtan4nrpyrgej" path="res://textures/IMG_1698.png" id="1_ptwdk"]
 [ext_resource type="Script" uid="uid://css7482j4jld8" path="res://Inventory/ItemData.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://dmm2hx7m8xjq5" path="res://textures/SphereIcon.png" id="2_icon"]
 [ext_resource type="PackedScene" uid="uid://dcig5eot87p8w" path="res://Inventory/TestSphere.tscn" id="3_scene"]
 
 [resource]
 script = ExtResource("1_script")
 ItemName = "Test Sphere"
-Icon = ExtResource("2_icon")
+Icon = ExtResource("1_ptwdk")
 ItemModelPrefab = ExtResource("3_scene")
