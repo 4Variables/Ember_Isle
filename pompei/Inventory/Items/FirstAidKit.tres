@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MedicalData" format=3 uid="uid://h53o47lxsan"]
+
+[ext_resource type="Texture2D" uid="uid://bygdosq8tq3i3" path="res://textures/FirstAid.PNG" id="1_xjvxv"]
+[ext_resource type="PackedScene" uid="uid://1dbos2vfepvl" path="res://Inventory/FirstAidKit.tscn" id="2_amffh"]
+[ext_resource type="Script" uid="uid://chjyk43036lc2" path="res://Inventory/medical_data.gd" id="3_uasuv"]
+
+[resource]
+script = ExtResource("3_uasuv")
+heal_amount = 40.0
+poison_cure = 10.0
+ItemName = "First Aid Kit"
+Icon = ExtResource("1_xjvxv")
+ItemModelPrefab = ExtResource("2_amffh")
+metadata/_custom_type_script = "uid://chjyk43036lc2"

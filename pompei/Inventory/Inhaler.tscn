@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://b1nhaleritm5"]
+
+[ext_resource type="PackedScene" uid="uid://cw4itmtpl8ra" path="res://Inventory/WorldItemTemplate.tscn" id="1_template"]
+[ext_resource type="Texture2D" uid="uid://b1kpcva1arlny" path="res://textures/Inhaler.PNG" id="2_icon"]
+
+[node name="Inhaler" instance=ExtResource("1_template")]
+interact_prompt = "Pick up inhaler"
+
+[node name="Sprite3D" parent="." index="0"]
+texture = ExtResource("2_icon")

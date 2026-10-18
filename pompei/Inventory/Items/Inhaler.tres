@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MedicalData" format=3 uid="uid://d1nhalerdat8"]
+
+[ext_resource type="Script" uid="uid://chjyk43036lc2" path="res://Inventory/medical_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b1kpcva1arlny" path="res://textures/Inhaler.PNG" id="2_icon"]
+[ext_resource type="PackedScene" uid="uid://b1nhaleritm5" path="res://Inventory/Inhaler.tscn" id="3_scene"]
+
+[resource]
+script = ExtResource("1_script")
+ItemName = "Inhaler"
+Icon = ExtResource("2_icon")
+ItemModelPrefab = ExtResource("3_scene")
+heal_amount = 0.0
+poison_cure = 60.0
+metadata/_custom_type_script = "uid://chjyk43036lc2"

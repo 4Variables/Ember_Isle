@@ -1,5 +1,7 @@
-res://user_interface/settings_popup.tscn
-res://user_interface/settings_popup.gd
-res://user_interface/main_menu.tscn
-res://user_interface/main_menu.gd
-res://translations.csv
+res://scenes/npc.tscn
+res://scripts/npc.gd
+res://scripts/npc_names.gd
+res://scenes/alert_row.tscn
+res://scripts/alert_row.gd
+res://scenes/main.tscn
+res://scripts/alert_list.gd

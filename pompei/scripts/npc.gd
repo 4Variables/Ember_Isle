@@ -4,10 +4,29 @@ extends CharacterBody3D
 enum State { IDLE, MOVING_TO_FIRE, EXTINGUISHING, COMMANDED , MOVING_TO_TREE, CHOPPING}
 
 signal movement_completed(citizen: CharacterBody3D)
+signal poison_changed(value: float, max_value: float)
 
 @export var chop_reach := 2.5
 @export var chop_power := 1.0            # chop() amount per second
 @export var auto_continue_chopping := true  # look for the next tree when one is felled
+
+# --- Equipment ---
+var equipment := {}   # EquipmentData.Slot -> EquipmentData
+# --- Poison ---
+@export var poison_rate := 2.0            # poison gained per second with no protection
+@export var poison_recovery_rate := 5.0   # poison lost per second when fully protected
+@export var max_poison := 100.0
+@export var poison_threshold := 50.0      # above this, health starts dropping
+@export var poison_damage_per_sec := 3.0
+
+var poison := 0.0
+enum PoisonAlert { NONE, WARNING, CRITICAL }
+signal poison_alert_changed(npc: Npc, level: PoisonAlert)
+@export var critical_health := 50.0       # below this the alert blinks
+@export var auto_heal_interval := 1.0     # seconds between auto-heal attempts
+var display_name := ""
+var poison_alert := PoisonAlert.NONE
+var _auto_heal_timer := 0.0
 
 var target_tree: ChoppableTree
 
@@ -32,6 +51,14 @@ var _selection_ring: MeshInstance3D
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 @onready var interaction_area: Area3D = $InteractionArea
 @onready var inventory: CitizenInventory = $Inventory
+@onready var sfx_walk: AudioStreamPlayer = $Sfx_walk
+@onready var sfx_chop: AudioStreamPlayer = $Sfx_chop
+@onready var health_bar: Sprite3D = $HealthBar
+@onready var sub_viewport: SubViewport = $HealthBar/SubViewport
+@onready var progress_bar: ProgressBar = $HealthBar/SubViewport/ProgressBar
+@onready var warning_sign: Sprite3D = $WarningSign
+@onready var warning_label: Label3D = $WarningLabel
+var _warning_tween: Tween
 
 @export var wood_item: ItemData
 
@@ -39,14 +66,25 @@ var health := 0.0
 var state := State.IDLE
 var target_fire: Node3D
 var _scan_timer := 0.0
+@export var low_health_threshold := 30.0
+var _health_fill := StyleBoxFlat.new()
 
 func _ready() -> void:
 	health = max_health
+	if display_name.is_empty():
+		display_name = NpcNames.pick()
 	add_to_group("selectable")
 	navigation_agent_3d.target_desired_distance = stop_distance
 	_create_selection_ring()
 	_create_move_marker()
 	#print("[%s] ready at %s" % [name, global_position])
+	
+	health_bar.texture = sub_viewport.get_texture()
+	progress_bar.max_value = max_health
+	progress_bar.add_theme_stylebox_override("fill", _health_fill)
+	_health_fill.set_corner_radius_all(12)
+	_update_health_bar()
+	health_bar.visible = false
 
 func _create_move_marker() -> void:
 	var ring := TorusMesh.new()
@@ -85,12 +123,14 @@ func _hide_move_marker() -> void:
 # Player Specific Commands.
 func set_selected(value: bool) -> void:
 	_selection_ring.visible = value
+	health_bar.visible = value
 
 func move_to(target: Vector3, show_marker := true) -> void:
 	target_fire = null
 	target_tree = null
 	state = State.COMMANDED
 	navigation_agent_3d.target_position = target
+	
 	if show_marker:
 		_show_move_marker	(target)
 	else:
@@ -108,12 +148,41 @@ func pick_up(item: InteractableItem) -> void:
 # Health.
 func take_damage(amount: float) -> void:
 	health -= amount
-	print("Health: ", health)
+	_try_self_treat()
+	_update_health_bar()
 	if health <= 0.0:
 		queue_free()   # replace with a death animation later
 		
+var _print_timer := 0.0
+
+# Returns false if there was nothing to treat, so the item isn't used up.
+func recover(health_amount: float, poison_amount := 0.0) -> bool:
+	var old_health := health
+	var old_poison := poison
+	health = minf(health + health_amount, max_health)
+	poison = maxf(poison - poison_amount, 0.0)
+	if health == old_health and poison == old_poison:
+		return false
+	_update_health_bar()
+	poison_changed.emit(poison, max_poison)
+	return true
+
+func _update_health_bar() -> void:
+	progress_bar.value = health
+	_health_fill.bg_color = Color.GREEN if health >= low_health_threshold else Color.RED
+
 # Main Loop
 func _physics_process(delta: float) -> void:
+	_treat_timer = maxf(_treat_timer - delta, 0.0)
+	_process_poison(delta)
+	if not is_inside_tree():
+		return   # died from poison this frame
+	
+	_print_timer -= delta
+	if _print_timer <= 0.0:
+		_print_timer = 1.0   # once per second
+		print("[%s] Health: %.1f | Poison: %.1f" % [name, health, poison])
+		
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
@@ -180,21 +249,31 @@ func _has_free_slot() -> bool:
 	
 func _process_chopping(delta: float) -> void:
 	_stop_horizontal()
+	
 	if not _tree_valid():
+		sfx_chop.stop()
 		_on_tree_gone()
 		return
+	
 	if _flat_distance_to(target_tree) > chop_reach * 1.2:
+		sfx_chop.stop()
 		state = State.MOVING_TO_TREE
 		return
 	
 	if not _has_free_slot():
+		sfx_chop.stop()
 		_on_inventory_full()
 		return
 			
 	_face(target_tree.global_position)
+	
+	if not sfx_chop.playing:
+		sfx_chop.play()
+		
 	var wood := target_tree.chop(chop_power * delta)
 	for i in wood:
 		if not inventory.AddItem(wood_item):
+			sfx_chop.stop()
 			_on_inventory_full()
 			break
 
@@ -285,6 +364,8 @@ func _steer_toward(path_pos: Vector3) -> void:
 	dir = dir.normalized()
 	velocity.x = dir.x * move_speed
 	velocity.z = dir.z * move_speed
+	if not sfx_walk.playing:
+		sfx_walk.play()
 	_face(global_position + dir)
 
 func _flat_distance_to(n: Node3D) -> float:
@@ -295,6 +376,7 @@ func _flat_distance_to(n: Node3D) -> float:
 func _stop_horizontal() -> void:
 	velocity.x = move_toward(velocity.x, 0.0, move_speed)
 	velocity.z = move_toward(velocity.z, 0.0, move_speed)
+	sfx_walk.stop()
 
 func _face(pos: Vector3) -> void:
 	var look := Vector3(pos.x, global_position.y, pos.z)
@@ -332,3 +414,169 @@ func _on_inventory_full() -> void:
 	print("[%s] inventory full" % name)
 	target_tree = null
 	state = State.IDLE
+
+# --- Equipment ---
+func equip(item: EquipmentData) -> bool:
+	var old: EquipmentData = equipment.get(item.slot)
+	if old:
+		if not inventory.AddItem(old):   # no room to swap out the old item
+			return false
+	equipment[item.slot] = item
+	return true
+
+func unequip(slot: EquipmentData.Slot) -> bool:
+	var old: EquipmentData = equipment.get(slot)
+	if not old:
+		return false
+	if not inventory.AddItem(old):
+		return false
+	equipment.erase(slot)
+	return true
+
+func get_poison_resistance() -> float:
+	var total := 0.0
+	for slot in equipment:
+		total += equipment[slot].poison_resistance
+	return clampf(total, 0.0, 1.0)
+
+# --- Self-treatment ---
+@export var auto_use_medicine := true     # set false to stop colonists using medicine on their own
+@export var save_big_medicine := true      # use the smallest item that's enough; keep big ones for emergencies
+@export var self_treat_below := 50.0      # health at which they reach for medicine
+@export var self_treat_cooldown := 3.0    # seconds between items
+var _treat_timer := 0.0
+
+func _try_self_treat() -> void:
+	if not auto_use_medicine or _treat_timer > 0.0:
+		return
+	var slot := -1
+	if health < self_treat_below:
+		slot = _best_medicine_slot(false)
+	if slot == -1 and poison > poison_threshold:
+		slot = _best_medicine_slot(true)
+	if slot == -1:
+		return
+	var med := inventory.Items[slot]
+	if inventory.UseItem(slot):
+		print("[%s] used %s" % [name, med.ItemName])
+		_treat_timer = self_treat_cooldown
+
+# for_poison: only items that are mainly a cure, ranked by poison removed.
+func _best_medicine_slot(for_poison: bool) -> int:
+	var best_slot := -1
+	for i in inventory.Items.size():
+		var med := inventory.Items[i] as MedicalData
+		if med == null:
+			continue
+		if for_poison and (med.poison_gain(self) <= 0.0 or med.heal_amount > med.poison_cure):
+			continue
+		if not for_poison and med.health_gain(self) <= 0.0:
+			continue
+		if best_slot == -1:
+			best_slot = i
+			continue
+		var best := inventory.Items[best_slot] as MedicalData
+		var better: bool = _better_poison_cure(med, best) if for_poison else _better_medicine(med, best)
+		if better:
+			best_slot = i
+	return best_slot
+
+# Most poison removed wins; on a tie, the one that heals less.
+func _better_poison_cure(a: MedicalData, b: MedicalData) -> bool:
+	var gain_a := a.poison_gain(self)
+	var gain_b := b.poison_gain(self)
+	if gain_a != gain_b:
+		return gain_a > gain_b
+	return a.heal_amount < b.heal_amount
+	
+	
+	# With save_big_medicine, the smallest item that gets them back to self_treat_below wins.
+# Otherwise, or if nothing is enough, the one that restores the most; ties go to the smaller item.
+func _better_medicine(a: MedicalData, b: MedicalData) -> bool:
+	if save_big_medicine:
+		var a_enough := health + a.heal_amount >= self_treat_below
+		var b_enough := health + b.heal_amount >= self_treat_below
+		if a_enough != b_enough:
+			return a_enough
+		if a_enough:
+			return a.heal_amount < b.heal_amount
+	var gain_a := a.health_gain(self)
+	var gain_b := b.health_gain(self)
+	if gain_a != gain_b:
+		return gain_a > gain_b
+	return a.heal_amount < b.heal_amount
+	
+# --- Poison ---
+
+func _process_poison(delta: float) -> void:
+	var resistance := get_poison_resistance()
+
+	if resistance < 1.0:
+		poison += poison_rate * (1.0 - resistance) * delta
+	else:
+		poison -= poison_recovery_rate * delta
+	poison = clampf(poison, 0.0, max_poison)
+	poison_changed.emit(poison, max_poison)
+
+	if poison > poison_threshold:
+		# Damage scales from 0 at the threshold to full at max poison
+		var severity := (poison - poison_threshold) / (max_poison - poison_threshold)
+		take_damage(poison_damage_per_sec * severity * delta)
+		
+	if health <= 0.0:
+		return
+	_try_auto_heal(delta)
+	_update_poison_alert()
+	
+func is_poisoned() -> bool:
+	return poison > poison_threshold
+
+func _try_auto_heal(delta: float) -> void:
+	_auto_heal_timer -= delta
+	if _auto_heal_timer > 0.0 or not is_poisoned():
+		return
+	_auto_heal_timer = auto_heal_interval
+	var slot := _find_best_medical_slot()
+	if slot != -1:
+		inventory.UseItem(slot)
+
+# Largest heal that doesn't push health over max_health, or -1 if none fits.
+func _find_best_medical_slot() -> int:
+	var best_slot := -1
+	var best_heal := -1.0
+	for i in inventory.Items.size():
+		var med := inventory.Items[i] as MedicalData
+		if med == null or health + med.heal_amount > max_health:
+			continue
+		if med.heal_amount > best_heal:
+			best_heal = med.heal_amount
+			best_slot = i
+	return best_slot
+
+func _update_poison_alert() -> void:
+	var level := PoisonAlert.NONE
+	if is_poisoned():
+		level = PoisonAlert.CRITICAL if health < critical_health else PoisonAlert.WARNING
+	if level != poison_alert:
+		poison_alert = level
+		poison_alert_changed.emit(self, level)
+		_update_overhead_warning()
+
+func _update_overhead_warning() -> void:
+	if _warning_tween:
+		_warning_tween.kill()
+		_warning_tween = null
+	warning_sign.modulate.a = 1.0
+	warning_sign.visible = poison_alert == PoisonAlert.CRITICAL
+	warning_label.visible = poison_alert != PoisonAlert.NONE
+
+	match poison_alert:
+		PoisonAlert.WARNING:
+			warning_label.text = "%s is being poisoned" % display_name
+			warning_label.modulate = Color.WHITE
+		PoisonAlert.CRITICAL:
+			warning_label.text = "%s is badly poisoned!" % display_name
+			warning_label.modulate = Color.YELLOW
+			_warning_tween = create_tween().set_loops()
+			_warning_tween.tween_property(warning_sign, "modulate:a", 0.15, 0.4)
+			_warning_tween.tween_property(warning_sign, "modulate:a", 1.0, 0.4)

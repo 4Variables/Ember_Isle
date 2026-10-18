@@ -1,7 +1,8 @@
 extends Control
 class_name InventorySlot
 
-signal OnItemEquiped(SlotID)
+signal OnItemEquiped(SlotID)#Does equiping use?
+signal OnItemUsed(SlotID) # Added the use method to the item data
 signal OnItemDropped(fromSlotID, toSlotID)
 
 @export var EquippedHighlight : Panel
@@ -16,6 +17,8 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if (event.button_index == MOUSE_BUTTON_LEFT and event.double_click):
 			OnItemEquiped.emit(InventorySlotID)
+		elif (event.button_index == MOUSE_BUTTON_RIGHT and event.pressed and SlotFilled):
+			OnItemUsed.emit(InventorySlotID)
 
 func FillSlot(data : ItemData, equipped : bool):
 	SlotData = data

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MedicalData" format=3 uid="uid://dsyr1ngedat6"]
+
+[ext_resource type="Script" uid="uid://chjyk43036lc2" path="res://Inventory/medical_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bfsr60owyy6gi" path="res://textures/Syringe.PNG" id="2_icon"]
+[ext_resource type="PackedScene" uid="uid://bsyr1ngeitm3" path="res://Inventory/Syringe.tscn" id="3_scene"]
+
+[resource]
+script = ExtResource("1_script")
+ItemName = "Syringe"
+Icon = ExtResource("2_icon")
+ItemModelPrefab = ExtResource("3_scene")
+heal_amount = 60.0
+poison_cure = 40.0
+metadata/_custom_type_script = "uid://chjyk43036lc2"
