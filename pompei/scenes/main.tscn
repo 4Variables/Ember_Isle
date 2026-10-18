@@ -247,19 +247,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.119354, 0, 0)
 [node name="FirstAidKit3" parent="." unique_id=1069251206 instance=ExtResource("15_muem4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.119354, 0, 8.46874)
 
-[node name="Syringe" parent="." instance=ExtResource("17_syringe")]
+[node name="Syringe" parent="." unique_id=1556140033 instance=ExtResource("17_syringe")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64.5, 0.6, 6)
 
-[node name="Food" parent="." instance=ExtResource("21_food")]
+[node name="Food" parent="." unique_id=1253759763 instance=ExtResource("21_food")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63, 0.6, -4)
 
-[node name="Food2" parent="." instance=ExtResource("21_food")]
+[node name="Food2" parent="." unique_id=133574823 instance=ExtResource("21_food")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 74, 0.6, -3)
 
-[node name="Inhaler" parent="." instance=ExtResource("22_inhaler")]
+[node name="Inhaler" parent="." unique_id=751195670 instance=ExtResource("22_inhaler")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 72.5, 0.6, 4)
 
-[node name="Inhaler2" parent="." instance=ExtResource("22_inhaler")]
+[node name="Inhaler2" parent="." unique_id=983061226 instance=ExtResource("22_inhaler")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 58, 0.6, 5)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=25898659]

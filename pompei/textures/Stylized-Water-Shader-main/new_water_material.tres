@@ -1,0 +1,63 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cf26lu1310urx"]
+
+[ext_resource type="Shader" uid="uid://5d8j0b7lgp3y" path="res://Stylized-Water-Shader-main/ocean.gdshader" id="1_qmqov"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rqfsj"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5473b"]
+noise = SubResource("FastNoiseLite_rqfsj")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_2hdfl"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2hdfl"]
+noise = SubResource("FastNoiseLite_2hdfl")
+seamless = true
+
+[sub_resource type="Gradient" id="Gradient_i53mv"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_rqfsj"]
+gradient = SubResource("Gradient_i53mv")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_6kuhc"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_qmqov")
+shader_parameter/absorption_color = Color(1, 0.35, 0, 1)
+shader_parameter/fresnel_radius = 2.0
+shader_parameter/fresnel_color = Color(0, 0.57, 0.72, 1)
+shader_parameter/roughness = 0.15
+shader_parameter/specular = 0.25
+shader_parameter/depth_distance = 25.0
+shader_parameter/beers_law = 4.5
+shader_parameter/displacement_strength = 0.3
+shader_parameter/displacement_scroll_speed = 0.1
+shader_parameter/displacement_scroll_offset = Vector2(-0.2, 0.3)
+shader_parameter/displacement_scale_offset = 0.5
+shader_parameter/displacement_scale = Vector2(0.04, 0.04)
+shader_parameter/displacement_texture = SubResource("NoiseTexture2D_5473b")
+shader_parameter/edge_thickness = 0.3
+shader_parameter/edge_speed = 0.35
+shader_parameter/edge_noise_scale = Vector2(0.4, 0.4)
+shader_parameter/edge_noise = SubResource("NoiseTexture2D_2hdfl")
+shader_parameter/edge_ramp = SubResource("GradientTexture1D_rqfsj")
+shader_parameter/influence_size = 1.0
+shader_parameter/player_wave_frequenzy = 10.0
+shader_parameter/player_wave_speed = 5.0
+shader_parameter/caustic_size = 2.0
+shader_parameter/caustic_range = 40.0
+shader_parameter/caustic_strength = 0.08
+shader_parameter/ssr_mix_strength = 0.65
+shader_parameter/ssr_travel = 100.0
+shader_parameter/ssr_resolution_near = 1.0
+shader_parameter/ssr_resolution_far = 5.0
+shader_parameter/ssr_tolerance = 1.0
+shader_parameter/refraction_strength = 1.25
+shader_parameter/normal_map_strength = 1.0
+shader_parameter/scroll_speed = 0.3
+shader_parameter/scroll_offset = Vector2(0.1, -0.3)
+shader_parameter/scale_offset = 0.5
+shader_parameter/normal_map_scale = Vector2(0.1, 0.1)
+shader_parameter/normal_map = SubResource("CanvasTexture_6kuhc")
