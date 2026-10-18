@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://dcig5eot87p8w" path="res://Inventory/TestSphere.tscn" id="13_a8y0u"]
 [ext_resource type="Texture2D" uid="uid://dtan4nrpyrgej" path="res://textures/IMG_1698.png" id="14_a8y0u"]
 [ext_resource type="PackedScene" uid="uid://chd7uy6qpmodt" path="res://scenes/tree.tscn" id="15_jkv2x"]
+[ext_resource type="PackedScene" uid="uid://1dbos2vfepvl" path="res://Inventory/FirstAidKit.tscn" id="15_muem4"]
 [ext_resource type="Script" uid="uid://bordcclfll7op" path="res://interaction_prompt.gd" id="16_jbj1t"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gu245"]
@@ -212,6 +213,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 89.1042, 0.4811597, 0)
 
 [node name="ItemTestCube2" parent="." unique_id=328940873 instance=ExtResource("13_a8y0u")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.47369, 0.33697915, -7.378543)
+
+[node name="FirstAidKit" parent="." unique_id=279019143 instance=ExtResource("15_muem4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60.938, 0, 0)
+
+[node name="FirstAidKit2" parent="." unique_id=1119210535 instance=ExtResource("15_muem4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.119354, 0, 0)
+
+[node name="FirstAidKit3" parent="." unique_id=1069251206 instance=ExtResource("15_muem4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.119354, 0, 8.46874)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=25898659]
 transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 18.214478, 29.379416, 0)

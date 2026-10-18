@@ -41,3 +41,17 @@ func SwapSlots(fromID : int, toID : int):
 func ToggleEquip(slotID : int):
 	EquippedSlot = -1 if (slotID == EquippedSlot or Items[slotID] == null) else slotID
 	Changed.emit()
+
+func UseItem(slotID : int) -> bool:
+	var item = Items[slotID]
+	if item == null:
+		return false
+	# Free the slot first so an equipment swap has room for the old item.
+	Items[slotID] = null
+	if not item.use(get_parent()):
+		Items[slotID] = item
+		return false
+	if EquippedSlot == slotID:
+		EquippedSlot = -1
+	Changed.emit()
+	return true

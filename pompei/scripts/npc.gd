@@ -4,10 +4,22 @@ extends CharacterBody3D
 enum State { IDLE, MOVING_TO_FIRE, EXTINGUISHING, COMMANDED , MOVING_TO_TREE, CHOPPING}
 
 signal movement_completed(citizen: CharacterBody3D)
+signal poison_changed(value: float, max_value: float)
 
 @export var chop_reach := 2.5
 @export var chop_power := 1.0            # chop() amount per second
 @export var auto_continue_chopping := true  # look for the next tree when one is felled
+
+# --- Equipment ---
+var equipment := {}   # EquipmentData.Slot -> EquipmentData
+# --- Poison ---
+@export var poison_rate := 2.0            # poison gained per second with no protection
+@export var poison_recovery_rate := 5.0   # poison lost per second when fully protected
+@export var max_poison := 100.0
+@export var poison_threshold := 50.0      # above this, health starts dropping
+@export var poison_damage_per_sec := 3.0
+
+var poison := 0.0
 
 var target_tree: ChoppableTree
 
@@ -108,12 +120,33 @@ func pick_up(item: InteractableItem) -> void:
 # Health.
 func take_damage(amount: float) -> void:
 	health -= amount
-	print("Health: ", health)
 	if health <= 0.0:
 		queue_free()   # replace with a death animation later
 		
+var _print_timer := 0.0
+
+# Returns false if there was nothing to treat, so the item isn't used up.
+func recover(health_amount: float, poison_amount := 0.0) -> bool:
+	var old_health := health
+	var old_poison := poison
+	health = minf(health + health_amount, max_health)
+	poison = maxf(poison - poison_amount, 0.0)
+	if health == old_health and poison == old_poison:
+		return false
+	poison_changed.emit(poison, max_poison)
+	return true
+
 # Main Loop
 func _physics_process(delta: float) -> void:
+	_process_poison(delta)
+	if not is_inside_tree():
+		return   # died from poison this frame
+	
+	_print_timer -= delta
+	if _print_timer <= 0.0:
+		_print_timer = 1.0   # once per second
+		print("[%s] Health: %.1f | Poison: %.1f" % [name, health, poison])
+		
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
@@ -332,3 +365,44 @@ func _on_inventory_full() -> void:
 	print("[%s] inventory full" % name)
 	target_tree = null
 	state = State.IDLE
+
+# --- Equipment ---
+func equip(item: EquipmentData) -> bool:
+	var old: EquipmentData = equipment.get(item.slot)
+	if old:
+		if not inventory.AddItem(old):   # no room to swap out the old item
+			return false
+	equipment[item.slot] = item
+	return true
+
+func unequip(slot: EquipmentData.Slot) -> bool:
+	var old: EquipmentData = equipment.get(slot)
+	if not old:
+		return false
+	if not inventory.AddItem(old):
+		return false
+	equipment.erase(slot)
+	return true
+
+func get_poison_resistance() -> float:
+	var total := 0.0
+	for slot in equipment:
+		total += equipment[slot].poison_resistance
+	return clampf(total, 0.0, 1.0)
+
+# --- Poison ---
+
+func _process_poison(delta: float) -> void:
+	var resistance := get_poison_resistance()
+
+	if resistance < 1.0:
+		poison += poison_rate * (1.0 - resistance) * delta
+	else:
+		poison -= poison_recovery_rate * delta
+	poison = clampf(poison, 0.0, max_poison)
+	poison_changed.emit(poison, max_poison)
+
+	if poison > poison_threshold:
+		# Damage scales from 0 at the threshold to full at max poison
+		var severity := (poison - poison_threshold) / (max_poison - poison_threshold)
+		take_damage(poison_damage_per_sec * severity * delta)

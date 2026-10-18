@@ -19,6 +19,10 @@ config/features=PackedStringArray("4.7", "Forward Plus")
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[dotnet]
+
+project/assembly_name="Pompei"
+
 [input]
 
 Interact={

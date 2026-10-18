@@ -23,6 +23,10 @@ func _ready():
 		slot.OnItemDropped.connect(ItemDroppedOnSlot)
 		slot.OnItemEquiped.connect(ItemEquipped)
 		InventorySlots.append(slot)
+		slot.OnItemUsed.connect(ItemUsed)
+
+func ItemUsed(slotID : int):
+	Target.UseItem(slotID)
 
 func ShowInventory(inventory : CitizenInventory):
 	if Target != null and Target.Changed.is_connected(Refresh):
