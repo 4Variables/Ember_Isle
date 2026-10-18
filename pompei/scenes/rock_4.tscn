@@ -1,0 +1,43 @@
+[gd_scene format=4 uid="uid://babx4keukxoj7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_85mii"]
+resource_name = "Rocks"
+cull_mode = 2
+albedo_color = Color(0.40969363, 0.42466196, 0.42115876, 1)
+roughness = 0.67220545
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_5gbeg"]
+_surfaces = [{
+"aabb": AABB(46.972187, 0.11523469, -35.99365, 0.31304932, 0.2364664, 0.2515068),
+"format": 34896613377,
+"index_count": 60,
+"index_data": PackedByteArray("AAABAAIAAQADAAIAAgAEAAAAAgADAAUAAgAFAAQAAwAGAAUABAAFAAcABQAGAAcAAAAEAAgABAAHAAgAAAAJAAEAAAAIAAkAAQAKAAMACgAGAAMACQAKAAEABwAGAAsACAAHAAsACwAGAAoACAALAAkACQALAAoA"),
+"name": "Rocks",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 12,
+"vertex_data": PackedByteArray("g4UAAMlxAACVvRY+zgEAAKc9CWrdMwAAjpBOvgAAAAAAAEQ0rckAAC05qaBzRQAAjYL//8lxAAB+U03T//8AAN/RKzkv4QAA//9RPzJSAAA70MWqsgoAAGHyTtNNtAAA")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_5cbdq"]
+resource_name = "Tree2_Plane_5538"
+_surfaces = [{
+"aabb": AABB(46.972187, 0.11523469, -35.99365, 0.31304932, 0.2364664, 0.2515068),
+"attribute_data": PackedByteArray("LbW2Q0y43EDsuNpFLbW2Qx22dD9MuNxA7LjaRS21UEkttbZDJCp1NY8o5jrXJrUzJCp1NdcmtTNCKAIx1ya1M3sjdTJCKAIxjyjmOnsjnjjXJrUz1ya1M3sjnjh7I3UyMDNbNa43BTfhM9w6DLrkN7+5jDwttaw7rjcFN6435jrhM9w6ii2RNLAv3jXHLBk4srd0P7+5jDwMui8/LbWsO7+5jDyyt3Q/MDMUOLAvGTZ3Ms80MDMUOLAv5jqwLxk2JCrdMi4tWzKKLZE0JCrdMootkTQ8K8Y3PCvGN4otkTTHLBk4PCvGN8csGTgkKuY6"),
+"format": 34896613399,
+"index_count": 60,
+"index_data": PackedByteArray("AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsA"),
+"material": SubResource("StandardMaterial3D_85mii"),
+"name": "Rocks",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 60,
+"vertex_data": PackedByteArray("g4UAAMlxcvWVvRY+zgFy9ac9CWrdM3L1g4UAAMlxh9v//1E/MlKH25W9Fj7OAYfbpz0Jat0zvvYAAEQ0rcm+9oOFAADJcb72g4UAAMlxAtQAAEQ0rckC1N/RKzkv4QLUg4UAAMlxP9Hf0Ss5L+E/0f//UT8yUj/R39ErOS/hEs1h8k7TTbQSzf//UT8yUhLNAABENK3Jz8Z+U03T///Pxt/RKzkv4c/G39ErOS/hMMN+U03T//8ww2HyTtNNtDDDAABENK3Jq+ItOamgc0Wr4n5TTdP//6viflNN0///tPKNgv//yXG08mHyTtNNtLTyLTmpoHNF392Ngv//yXHf3X5TTdP//9/djpBOvgAAR9WNgv//yXFH1S05qaBzRUfVO9DFqrIKH/ONgv//yXEf846QTr4AAB/zYfJO0020v/CNgv//yXG/8DvQxaqyCr/w//9RPzJShO870MWqsgqE75W9Fj7OAYTv//9RPzJSBtdh8k7TTbQG1zvQxaqyCgbXlb0WPs4Bdv070MWqsgp2/Y6QTr4AAHb9lb0WPs4BTPuOkE6+AABM+6c9CWrdM0z7pz0Jat0zKeiOkE6+AAAp6C05qaBzRSnopz0Jat0zI98tOamgc0Uj3wAARDStySPfiFDNT4hQzU+IUM1PI1/MQyNfzEMjX8xDllEvU5ZRL1OWUS9TY2ILW2NiC1tjYgtbJmcZSCZnGUgmZxlI8Z5dVfGeXVXxnl1VFG+5dBRvuXQUb7l0G5qGeBuahngbmoZ4Wfp5QVn6eUFZ+nlBuMuDA7jLgwO4y4MDAfS8QQH0vEEB9LxBybgnvMm4J7zJuCe8mrCyAJqwsgCasLIAQUY2CEFGNghBRjYI9rdGUfa3RlH2t0ZRr7nRV6+50VevudFXXDt7Plw7ez5cO3s+FMjMxhTIzMYUyMzGOsZZxTrGWcU6xlnFCc8jzgnPI84JzyPO")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_5gbeg")
+
+[node name="rock4" type="MeshInstance3D" unique_id=772493358]
+transform = Transform3D(0.50875413, 0, 0, 0, 0.50875413, 0, 0, 0, 0.50875413, 0, 0, 0)
+mesh = SubResource("ArrayMesh_5cbdq")

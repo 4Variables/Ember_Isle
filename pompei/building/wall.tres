@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="BuildPieceData" format=3 uid="uid://j6xf4pnp1yyl"]
+
+[ext_resource type="Script" uid="uid://nrkean68y7j4" path="res://build_piece_data.gd" id="1_v6oxp"]
+[ext_resource type="Texture2D" uid="uid://tojv26a5g8ce" path="res://textures/fire_prev.png" id="1_x77lj"]
+[ext_resource type="PackedScene" uid="uid://ctw2l6yht55re" path="res://scenes/wall.tscn" id="2_gwerx"]
+
+[resource]
+script = ExtResource("1_v6oxp")
+display_name = "wall"
+icon = ExtResource("1_x77lj")
+scene = ExtResource("2_gwerx")
+metadata/_custom_type_script = "uid://nrkean68y7j4"

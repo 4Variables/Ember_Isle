@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://dvcmobf23xayb" path="res://textures/partly_cloudy_sky.exr" id="1_dp3eg"]
 [ext_resource type="PackedScene" uid="uid://si5prvgmosvj" path="res://scenes/fire.tscn" id="2_lquwl"]
 [ext_resource type="Script" uid="uid://n40h4ykb87xa" path="res://scripts/camera_rig.gd" id="3_7mycd"]
-[ext_resource type="PackedScene" uid="uid://q70kyjxn5ebo" path="res://scenes/volcano.tscn" id="4_272bh"]
 [ext_resource type="Script" uid="uid://cijgfh3163jdc" path="res://scripts/npc_spawner.gd" id="6_272bh"]
 [ext_resource type="Script" uid="uid://gkpda1b2nl3p" path="res://scripts/npcspawnentry.gd" id="7_5vw27"]
 [ext_resource type="PackedScene" uid="uid://bl4wemqn5wyfe" path="res://scenes/npc.tscn" id="8_kek77"]
@@ -24,6 +23,10 @@
 [ext_resource type="FontFile" uid="uid://dr2njdy55my5h" path="res://user_interface/GrapeSoda.ttf" id="20_alfnt"]
 [ext_resource type="PackedScene" uid="uid://bf00ditem4wx" path="res://Inventory/Food.tscn" id="21_food"]
 [ext_resource type="PackedScene" uid="uid://b1nhaleritm5" path="res://Inventory/Inhaler.tscn" id="22_inhaler"]
+[ext_resource type="PackedScene" uid="uid://bu4rtrn6ddnqj" path="res://scenes/terrain.scn" id="23_terrain"]
+[ext_resource type="Script" uid="uid://pvmwe076dnr7" path="res://building_sytem.gd" id="24_build"]
+[ext_resource type="Script" uid="uid://nrkean68y7j4" path="res://build_piece_data.gd" id="25_piece"]
+[ext_resource type="Resource" uid="uid://j6xf4pnp1yyl" path="res://building/wall.tres" id="26_wall"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_muem4"]
 panorama = ExtResource("1_dp3eg")
@@ -157,6 +160,7 @@ collision_mask = 14
 
 [node name="floor" type="MeshInstance3D" parent="NavigationRegion3D/ground" unique_id=1418090576]
 transform = Transform3D(29.999998, 0, 0, 0, 29.999998, 0, 0, 0, 29.999998, 0, 0, 0)
+visible = false
 mesh = SubResource("PlaneMesh_fr0e3")
 surface_material_override/0 = SubResource("StandardMaterial3D_4kra6")
 
@@ -164,10 +168,10 @@ surface_material_override/0 = SubResource("StandardMaterial3D_4kra6")
 transform = Transform3D(29.999998, 0, 0, 0, 29.999998, 0, 0, 0, 29.999998, 0, 0, 0)
 shape = SubResource("BoxShape3D_ya4ey")
 
-[node name="volcanicmountain" parent="NavigationRegion3D" unique_id=862375047 instance=ExtResource("4_272bh")]
-
 [node name="tree" parent="NavigationRegion3D" unique_id=357063696 instance=ExtResource("15_jkv2x")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.637463, 2.9732752, 0)
+
+[node name="Terrain" parent="NavigationRegion3D" unique_id=1839611498 instance=ExtResource("23_terrain")]
 
 [node name="SelectionController" type="Node3D" parent="." unique_id=366853255]
 script = ExtResource("9_ya4ey")
@@ -315,6 +319,11 @@ script = ExtResource("18_dp3eg")
 spawner = NodePath("../../../../NpcSpawner")
 alert_row_scene = ExtResource("19_alrow")
 panel = NodePath("../..")
+
+[node name="BuildingSystem" type="Node3D" parent="." unique_id=104445345]
+script = ExtResource("24_build")
+pieces = Array[ExtResource("25_piece")]([ExtResource("26_wall")])
+navigation_region = NodePath("../NavigationRegion3D")
 
 [editable path="NavigationRegion3D/hospital"]
 [editable path="NavigationRegion3D/station"]

@@ -11,6 +11,7 @@ extends Node3D
 @onready var selection_box: Control = $"../SelectionUI/SelectionBox"
 @onready var inventory_hud: InventoryHandler = $"../InventoryHUD/InventoryUI"
 @onready var prompt: Label = $"../PromptUI/Label"
+@onready var building: BuildingSystem = $"../BuildingSystem"
 
 const DRAG_THRESHOLD := 8.0
 
@@ -24,6 +25,8 @@ var inventory_open := false
 # --- Input ---
 
 func _unhandled_input(event: InputEvent) -> void:
+	if is_instance_valid(building) and building.active:
+		return
 	if event.is_action_pressed("Interact"):
 		interact_with_nearby()
 		return
