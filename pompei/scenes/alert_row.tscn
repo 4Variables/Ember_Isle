@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://berk5ua4n572b"]
+
+[ext_resource type="Script" uid="uid://dln1s2tn4jdu6" path="res://scripts/alert_row.gd" id="1_sym3a"]
+[ext_resource type="Texture2D" uid="uid://bqvrnnaqjmotr" path="res://scenes/warning.png" id="1_xfjd6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_alrow"]
+content_margin_left = 6.0
+content_margin_top = 4.0
+content_margin_right = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(1, 1, 1, 0.06)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="AlertRow" type="PanelContainer" unique_id=1727402853]
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_alrow")
+script = ExtResource("1_sym3a")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=933983423]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Icon" type="TextureRect" parent="HBoxContainer" unique_id=1078606139]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = ExtResource("1_xfjd6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Message" type="Label" parent="HBoxContainer" unique_id=1588593081]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10

@@ -9,8 +9,11 @@
 [ext_resource type="Script" uid="uid://d3qbykqrcq52" path="res://Inventory/CitizenInventory.gd" id="6_v4e37"]
 [ext_resource type="Resource" uid="uid://h53o47lxsan" path="res://Inventory/Items/FirstAidKit.tres" id="7_0tygy"]
 [ext_resource type="Resource" uid="uid://dsyr1ngedat6" path="res://Inventory/Items/Syringe.tres" id="8_syringe"]
-[ext_resource type="Resource" uid="uid://df00ddata7qx" path="res://Inventory/Items/Food.tres" id="9_food"]
-[ext_resource type="Resource" uid="uid://d1nhalerdat8" path="res://Inventory/Items/Inhaler.tres" id="10_inhaler"]
+[ext_resource type="AudioStream" uid="uid://dovg8ickcg8c1" path="res://scenes/walking-on-leaves.mp3" id="9_sptji"]
+[ext_resource type="AudioStream" uid="uid://b4ij0paqyvj2n" path="res://scenes/knife.mp3" id="10_v4e37"]
+[ext_resource type="Texture2D" uid="uid://bqvrnnaqjmotr" path="res://scenes/warning.png" id="11_1h837"]
+[ext_resource type="Resource" uid="uid://df00ddata7qx" path="res://Inventory/Items/Food.tres" id="12_food"]
+[ext_resource type="Resource" uid="uid://d1nhalerdat8" path="res://Inventory/Items/Inhaler.tres" id="13_inhaler"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_fr0e3"]
 
@@ -18,6 +21,12 @@
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_gl1un"]
 radius = 1.2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v4e37"]
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
 
 [node name="npc" type="CharacterBody3D" unique_id=1712775677]
 collision_layer = 4
@@ -38,7 +47,7 @@ avoidance_enabled = true
 collision_layer = 0
 collision_mask = 32
 script = ExtResource("2_tl2vt")
-ItemTypes = Array[ExtResource("3_hwkja")]([ExtResource("4_0tygy"), ExtResource("5_sptji"), ExtResource("6_hwkja"), ExtResource("7_0tygy"), ExtResource("8_syringe"), ExtResource("9_food"), ExtResource("10_inhaler")])
+ItemTypes = Array[ExtResource("3_hwkja")]([ExtResource("4_0tygy"), ExtResource("5_sptji"), ExtResource("6_hwkja"), ExtResource("7_0tygy"), ExtResource("8_syringe"), ExtResource("12_food"), ExtResource("13_inhaler")])
 Inventory = NodePath("../Inventory")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea" unique_id=815126464]
@@ -47,3 +56,47 @@ shape = SubResource("SphereShape3D_gl1un")
 [node name="Inventory" type="Node" parent="." unique_id=1094765424]
 script = ExtResource("6_v4e37")
 ItemSlotsCount = 8
+
+[node name="Sfx_walk" type="AudioStreamPlayer" parent="." unique_id=333143326]
+stream = ExtResource("9_sptji")
+volume_db = -3.0
+
+[node name="Sfx_chop" type="AudioStreamPlayer" parent="." unique_id=1846359399]
+stream = ExtResource("10_v4e37")
+volume_db = -3.0
+
+[node name="WarningSign" type="Sprite3D" parent="." unique_id=217514158]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
+visible = false
+billboard = 1
+no_depth_test = true
+texture = ExtResource("11_1h837")
+
+[node name="WarningLabel" type="Label3D" parent="." unique_id=773503231]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85, 0)
+visible = false
+billboard = 1
+no_depth_test = true
+font_size = 48
+outline_size = 8
+
+[node name="HealthBar" type="Sprite3D" parent="." unique_id=1547222049]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+visible = false
+pixel_size = 0.008
+billboard = 1
+no_depth_test = true
+
+[node name="SubViewport" type="SubViewport" parent="HealthBar" unique_id=794436375]
+transparent_bg = true
+size = Vector2i(200, 24)
+render_target_update_mode = 4
+
+[node name="ProgressBar" type="ProgressBar" parent="HealthBar/SubViewport" unique_id=590637841]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_v4e37")
+show_percentage = false
