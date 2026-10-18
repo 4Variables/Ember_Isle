@@ -47,5 +47,19 @@ Interact={
 [rendering]
 
 rendering_device/driver.windows="d3d12"
-renderer/rendering_method="gl_compatibility"
 occlusion_culling/use_occlusion_culling=true
+
+[shader_globals]
+
+wind_intensity={
+"type": "float",
+"value": 0.5
+}
+wind_direction={
+"type": "vec3",
+"value": Vector3(1, 0, 0)
+}
+player_position={
+"type": "vec3",
+"value": Vector3(0, 0, 0)
+}
