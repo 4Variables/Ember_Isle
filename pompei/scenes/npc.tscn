@@ -8,6 +8,9 @@
 [ext_resource type="Resource" uid="uid://bkcvfnydjr3ks" path="res://Inventory/Items/wood.tres" id="6_hwkja"]
 [ext_resource type="Script" uid="uid://d3qbykqrcq52" path="res://Inventory/CitizenInventory.gd" id="6_v4e37"]
 [ext_resource type="Resource" uid="uid://h53o47lxsan" path="res://Inventory/Items/FirstAidKit.tres" id="7_0tygy"]
+[ext_resource type="Resource" uid="uid://dsyr1ngedat6" path="res://Inventory/Items/Syringe.tres" id="8_syringe"]
+[ext_resource type="Resource" uid="uid://df00ddata7qx" path="res://Inventory/Items/Food.tres" id="9_food"]
+[ext_resource type="Resource" uid="uid://d1nhalerdat8" path="res://Inventory/Items/Inhaler.tres" id="10_inhaler"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_fr0e3"]
 
@@ -35,7 +38,7 @@ avoidance_enabled = true
 collision_layer = 0
 collision_mask = 32
 script = ExtResource("2_tl2vt")
-ItemTypes = Array[ExtResource("3_hwkja")]([ExtResource("4_0tygy"), ExtResource("5_sptji"), ExtResource("6_hwkja"), ExtResource("7_0tygy")])
+ItemTypes = Array[ExtResource("3_hwkja")]([ExtResource("4_0tygy"), ExtResource("5_sptji"), ExtResource("6_hwkja"), ExtResource("7_0tygy"), ExtResource("8_syringe"), ExtResource("9_food"), ExtResource("10_inhaler")])
 Inventory = NodePath("../Inventory")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea" unique_id=815126464]

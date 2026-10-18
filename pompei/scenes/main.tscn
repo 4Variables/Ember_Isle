@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bqhhgtlf7y5mf"]
 
 [ext_resource type="Script" uid="uid://drf1qq2ukjswe" path="res://scripts/fire_spawner.gd" id="1_1bvp3"]
+[ext_resource type="Texture2D" uid="uid://dvcmobf23xayb" path="res://textures/partly_cloudy_sky.exr" id="1_dp3eg"]
 [ext_resource type="PackedScene" uid="uid://si5prvgmosvj" path="res://scenes/fire.tscn" id="2_lquwl"]
 [ext_resource type="Script" uid="uid://n40h4ykb87xa" path="res://scripts/camera_rig.gd" id="3_7mycd"]
 [ext_resource type="PackedScene" uid="uid://q70kyjxn5ebo" path="res://scenes/volcano.tscn" id="4_272bh"]
@@ -13,17 +14,19 @@
 [ext_resource type="PackedScene" uid="uid://cmad2p3jpgtq1" path="res://scenes/house.tscn" id="11_ya4ey"]
 [ext_resource type="PackedScene" uid="uid://cuiklvlmyu8n6" path="res://Inventory/TestCube.tscn" id="12_trceg"]
 [ext_resource type="PackedScene" uid="uid://dcig5eot87p8w" path="res://Inventory/TestSphere.tscn" id="13_a8y0u"]
-[ext_resource type="Texture2D" uid="uid://dtan4nrpyrgej" path="res://textures/IMG_1698.png" id="14_a8y0u"]
+[ext_resource type="Texture2D" uid="uid://dtan4nrpyrgej" path="res://textures/WaterBottle.png" id="14_a8y0u"]
 [ext_resource type="PackedScene" uid="uid://chd7uy6qpmodt" path="res://scenes/tree.tscn" id="15_jkv2x"]
 [ext_resource type="PackedScene" uid="uid://1dbos2vfepvl" path="res://Inventory/FirstAidKit.tscn" id="15_muem4"]
 [ext_resource type="Script" uid="uid://bordcclfll7op" path="res://interaction_prompt.gd" id="16_jbj1t"]
+[ext_resource type="PackedScene" uid="uid://bsyr1ngeitm3" path="res://Inventory/Syringe.tscn" id="17_syringe"]
+[ext_resource type="PackedScene" uid="uid://bf00ditem4wx" path="res://Inventory/Food.tscn" id="18_food"]
+[ext_resource type="PackedScene" uid="uid://b1nhaleritm5" path="res://Inventory/Inhaler.tscn" id="19_inhaler"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gu245"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_muem4"]
+panorama = ExtResource("1_dp3eg")
 
 [sub_resource type="Sky" id="Sky_3dejo"]
-sky_material = SubResource("ProceduralSkyMaterial_gu245")
+sky_material = SubResource("PanoramaSkyMaterial_muem4")
 
 [sub_resource type="Environment" id="Environment_yrdue"]
 background_mode = 2
@@ -222,6 +225,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.119354, 0, 0)
 
 [node name="FirstAidKit3" parent="." unique_id=1069251206 instance=ExtResource("15_muem4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.119354, 0, 8.46874)
+
+[node name="Syringe" parent="." instance=ExtResource("17_syringe")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64.5, 0.6, 6)
+
+[node name="Food" parent="." instance=ExtResource("18_food")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63, 0.6, -4)
+
+[node name="Food2" parent="." instance=ExtResource("18_food")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 74, 0.6, -3)
+
+[node name="Inhaler" parent="." instance=ExtResource("19_inhaler")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 72.5, 0.6, 4)
+
+[node name="Inhaler2" parent="." instance=ExtResource("19_inhaler")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 58, 0.6, 5)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=25898659]
 transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 18.214478, 29.379416, 0)

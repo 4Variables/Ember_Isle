@@ -6,6 +6,8 @@
 
 [resource]
 script = ExtResource("3_uasuv")
+heal_amount = 40.0
+poison_cure = 10.0
 ItemName = "First Aid Kit"
 Icon = ExtResource("1_xjvxv")
 ItemModelPrefab = ExtResource("2_amffh")

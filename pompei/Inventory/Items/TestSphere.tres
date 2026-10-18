@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://b2uicw30f2cjm"]
 
-[ext_resource type="Texture2D" uid="uid://dtan4nrpyrgej" path="res://textures/IMG_1698.png" id="1_ptwdk"]
+[ext_resource type="Texture2D" uid="uid://dtan4nrpyrgej" path="res://textures/WaterBottle.png" id="1_ptwdk"]
 [ext_resource type="Script" uid="uid://css7482j4jld8" path="res://Inventory/ItemData.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://dcig5eot87p8w" path="res://Inventory/TestSphere.tscn" id="3_scene"]
 

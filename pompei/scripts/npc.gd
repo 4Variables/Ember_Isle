@@ -120,6 +120,7 @@ func pick_up(item: InteractableItem) -> void:
 # Health.
 func take_damage(amount: float) -> void:
 	health -= amount
+	_try_self_treat()
 	if health <= 0.0:
 		queue_free()   # replace with a death animation later
 		
@@ -138,6 +139,7 @@ func recover(health_amount: float, poison_amount := 0.0) -> bool:
 
 # Main Loop
 func _physics_process(delta: float) -> void:
+	_treat_timer = maxf(_treat_timer - delta, 0.0)
 	_process_poison(delta)
 	if not is_inside_tree():
 		return   # died from poison this frame
@@ -390,6 +392,73 @@ func get_poison_resistance() -> float:
 		total += equipment[slot].poison_resistance
 	return clampf(total, 0.0, 1.0)
 
+# --- Self-treatment ---
+@export var auto_use_medicine := true     # set false to stop colonists using medicine on their own
+@export var save_big_medicine := true      # use the smallest item that's enough; keep big ones for emergencies
+@export var self_treat_below := 50.0      # health at which they reach for medicine
+@export var self_treat_cooldown := 3.0    # seconds between items
+var _treat_timer := 0.0
+
+func _try_self_treat() -> void:
+	if not auto_use_medicine or _treat_timer > 0.0:
+		return
+	var slot := -1
+	if health < self_treat_below:
+		slot = _best_medicine_slot(false)
+	if slot == -1 and poison > poison_threshold:
+		slot = _best_medicine_slot(true)
+	if slot == -1:
+		return
+	var med := inventory.Items[slot]
+	if inventory.UseItem(slot):
+		print("[%s] used %s" % [name, med.ItemName])
+		_treat_timer = self_treat_cooldown
+
+# for_poison: only items that are mainly a cure, ranked by poison removed.
+func _best_medicine_slot(for_poison: bool) -> int:
+	var best_slot := -1
+	for i in inventory.Items.size():
+		var med := inventory.Items[i] as MedicalData
+		if med == null:
+			continue
+		if for_poison and (med.poison_gain(self) <= 0.0 or med.heal_amount > med.poison_cure):
+			continue
+		if not for_poison and med.health_gain(self) <= 0.0:
+			continue
+		if best_slot == -1:
+			best_slot = i
+			continue
+		var best := inventory.Items[best_slot] as MedicalData
+		var better: bool = _better_poison_cure(med, best) if for_poison else _better_medicine(med, best)
+		if better:
+			best_slot = i
+	return best_slot
+
+# Most poison removed wins; on a tie, the one that heals less.
+func _better_poison_cure(a: MedicalData, b: MedicalData) -> bool:
+	var gain_a := a.poison_gain(self)
+	var gain_b := b.poison_gain(self)
+	if gain_a != gain_b:
+		return gain_a > gain_b
+	return a.heal_amount < b.heal_amount
+	
+	
+	# With save_big_medicine, the smallest item that gets them back to self_treat_below wins.
+# Otherwise, or if nothing is enough, the one that restores the most; ties go to the smaller item.
+func _better_medicine(a: MedicalData, b: MedicalData) -> bool:
+	if save_big_medicine:
+		var a_enough := health + a.heal_amount >= self_treat_below
+		var b_enough := health + b.heal_amount >= self_treat_below
+		if a_enough != b_enough:
+			return a_enough
+		if a_enough:
+			return a.heal_amount < b.heal_amount
+	var gain_a := a.health_gain(self)
+	var gain_b := b.health_gain(self)
+	if gain_a != gain_b:
+		return gain_a > gain_b
+	return a.heal_amount < b.heal_amount
+	
 # --- Poison ---
 
 func _process_poison(delta: float) -> void:
