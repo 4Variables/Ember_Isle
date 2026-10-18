@@ -17,6 +17,9 @@
 [ext_resource type="PackedScene" uid="uid://chd7uy6qpmodt" path="res://scenes/tree.tscn" id="15_jkv2x"]
 [ext_resource type="PackedScene" uid="uid://1dbos2vfepvl" path="res://Inventory/FirstAidKit.tscn" id="15_muem4"]
 [ext_resource type="Script" uid="uid://bordcclfll7op" path="res://interaction_prompt.gd" id="16_jbj1t"]
+[ext_resource type="Script" uid="uid://ofyofsk0mv6m" path="res://scripts/alert_list.gd" id="18_dp3eg"]
+[ext_resource type="PackedScene" uid="uid://berk5ua4n572b" path="res://scenes/alert_row.tscn" id="19_alrow"]
+[ext_resource type="FontFile" uid="uid://dr2njdy55my5h" path="res://user_interface/GrapeSoda.ttf" id="20_alfnt"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gu245"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -76,6 +79,24 @@ shadow_offset = Vector2(-1, 3)
 transparency = 1
 albedo_texture = ExtResource("14_a8y0u")
 billboard_mode = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_alpnl"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.08, 0.08, 0.1, 0.75)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.8, 0.2, 0.6)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_size = 4
 
 [node name="pompei" type="Node3D" unique_id=715505370]
 
@@ -234,6 +255,48 @@ surface_material_override/0 = SubResource("StandardMaterial3D_rsry2")
 offset_right = 40.0
 offset_bottom = 23.0
 script = ExtResource("16_jbj1t")
+
+[node name="AlertUI" type="CanvasLayer" parent="." unique_id=1437442912]
+
+[node name="AlertPanel" type="PanelContainer" parent="AlertUI" unique_id=1580263417]
+visible = false
+custom_minimum_size = Vector2(220, 0)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -236.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 56.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_alpnl")
+
+[node name="Content" type="VBoxContainer" parent="AlertUI/AlertPanel" unique_id=1946130852]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="AlertUI/AlertPanel/Content" unique_id=829164035]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.2, 1)
+theme_override_fonts/font = ExtResource("20_alfnt")
+theme_override_font_sizes/font_size = 14
+text = "Alerts"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="AlertUI/AlertPanel/Content" unique_id=1302746581]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="AlertList" type="VBoxContainer" parent="AlertUI/AlertPanel/Content" unique_id=2086983504 node_paths=PackedStringArray("spawner", "panel")]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+script = ExtResource("18_dp3eg")
+spawner = NodePath("../../../../NpcSpawner")
+alert_row_scene = ExtResource("19_alrow")
+panel = NodePath("../..")
 
 [editable path="NavigationRegion3D/hospital"]
 [editable path="NavigationRegion3D/station"]

@@ -1,4 +1,7 @@
-res://Inventory/FirstAidKit.tscn
-res://Inventory/medical_data.gd
 res://scenes/npc.tscn
+res://scripts/npc.gd
+res://scripts/npc_names.gd
+res://scenes/alert_row.tscn
+res://scripts/alert_row.gd
 res://scenes/main.tscn
+res://scripts/alert_list.gd

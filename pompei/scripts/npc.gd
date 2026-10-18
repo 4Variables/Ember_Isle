@@ -20,6 +20,13 @@ var equipment := {}   # EquipmentData.Slot -> EquipmentData
 @export var poison_damage_per_sec := 3.0
 
 var poison := 0.0
+enum PoisonAlert { NONE, WARNING, CRITICAL }
+signal poison_alert_changed(npc: Npc, level: PoisonAlert)
+@export var critical_health := 50.0       # below this the alert blinks
+@export var auto_heal_interval := 1.0     # seconds between auto-heal attempts
+var display_name := ""
+var poison_alert := PoisonAlert.NONE
+var _auto_heal_timer := 0.0
 
 var target_tree: ChoppableTree
 
@@ -44,6 +51,14 @@ var _selection_ring: MeshInstance3D
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 @onready var interaction_area: Area3D = $InteractionArea
 @onready var inventory: CitizenInventory = $Inventory
+@onready var sfx_walk: AudioStreamPlayer = $Sfx_walk
+@onready var sfx_chop: AudioStreamPlayer = $Sfx_chop
+@onready var health_bar: Sprite3D = $HealthBar
+@onready var sub_viewport: SubViewport = $HealthBar/SubViewport
+@onready var progress_bar: ProgressBar = $HealthBar/SubViewport/ProgressBar
+@onready var warning_sign: Sprite3D = $WarningSign
+@onready var warning_label: Label3D = $WarningLabel
+var _warning_tween: Tween
 
 @export var wood_item: ItemData
 
@@ -51,14 +66,25 @@ var health := 0.0
 var state := State.IDLE
 var target_fire: Node3D
 var _scan_timer := 0.0
+@export var low_health_threshold := 30.0
+var _health_fill := StyleBoxFlat.new()
 
 func _ready() -> void:
 	health = max_health
+	if display_name.is_empty():
+		display_name = NpcNames.pick()
 	add_to_group("selectable")
 	navigation_agent_3d.target_desired_distance = stop_distance
 	_create_selection_ring()
 	_create_move_marker()
 	#print("[%s] ready at %s" % [name, global_position])
+	
+	health_bar.texture = sub_viewport.get_texture()
+	progress_bar.max_value = max_health
+	progress_bar.add_theme_stylebox_override("fill", _health_fill)
+	_health_fill.set_corner_radius_all(12)
+	_update_health_bar()
+	health_bar.visible = false
 
 func _create_move_marker() -> void:
 	var ring := TorusMesh.new()
@@ -97,12 +123,14 @@ func _hide_move_marker() -> void:
 # Player Specific Commands.
 func set_selected(value: bool) -> void:
 	_selection_ring.visible = value
+	health_bar.visible = value
 
 func move_to(target: Vector3, show_marker := true) -> void:
 	target_fire = null
 	target_tree = null
 	state = State.COMMANDED
 	navigation_agent_3d.target_position = target
+	
 	if show_marker:
 		_show_move_marker	(target)
 	else:
@@ -120,6 +148,7 @@ func pick_up(item: InteractableItem) -> void:
 # Health.
 func take_damage(amount: float) -> void:
 	health -= amount
+	_update_health_bar()
 	if health <= 0.0:
 		queue_free()   # replace with a death animation later
 		
@@ -133,8 +162,13 @@ func recover(health_amount: float, poison_amount := 0.0) -> bool:
 	poison = maxf(poison - poison_amount, 0.0)
 	if health == old_health and poison == old_poison:
 		return false
+	_update_health_bar()
 	poison_changed.emit(poison, max_poison)
 	return true
+
+func _update_health_bar() -> void:
+	progress_bar.value = health
+	_health_fill.bg_color = Color.GREEN if health >= low_health_threshold else Color.RED
 
 # Main Loop
 func _physics_process(delta: float) -> void:
@@ -213,21 +247,31 @@ func _has_free_slot() -> bool:
 	
 func _process_chopping(delta: float) -> void:
 	_stop_horizontal()
+	
 	if not _tree_valid():
+		sfx_chop.stop()
 		_on_tree_gone()
 		return
+	
 	if _flat_distance_to(target_tree) > chop_reach * 1.2:
+		sfx_chop.stop()
 		state = State.MOVING_TO_TREE
 		return
 	
 	if not _has_free_slot():
+		sfx_chop.stop()
 		_on_inventory_full()
 		return
 			
 	_face(target_tree.global_position)
+	
+	if not sfx_chop.playing:
+		sfx_chop.play()
+		
 	var wood := target_tree.chop(chop_power * delta)
 	for i in wood:
 		if not inventory.AddItem(wood_item):
+			sfx_chop.stop()
 			_on_inventory_full()
 			break
 
@@ -318,6 +362,8 @@ func _steer_toward(path_pos: Vector3) -> void:
 	dir = dir.normalized()
 	velocity.x = dir.x * move_speed
 	velocity.z = dir.z * move_speed
+	if not sfx_walk.playing:
+		sfx_walk.play()
 	_face(global_position + dir)
 
 func _flat_distance_to(n: Node3D) -> float:
@@ -328,6 +374,7 @@ func _flat_distance_to(n: Node3D) -> float:
 func _stop_horizontal() -> void:
 	velocity.x = move_toward(velocity.x, 0.0, move_speed)
 	velocity.z = move_toward(velocity.z, 0.0, move_speed)
+	sfx_walk.stop()
 
 func _face(pos: Vector3) -> void:
 	var look := Vector3(pos.x, global_position.y, pos.z)
@@ -406,3 +453,61 @@ func _process_poison(delta: float) -> void:
 		# Damage scales from 0 at the threshold to full at max poison
 		var severity := (poison - poison_threshold) / (max_poison - poison_threshold)
 		take_damage(poison_damage_per_sec * severity * delta)
+		
+	if health <= 0.0:
+		return
+	_try_auto_heal(delta)
+	_update_poison_alert()
+	
+func is_poisoned() -> bool:
+	return poison > poison_threshold
+
+func _try_auto_heal(delta: float) -> void:
+	_auto_heal_timer -= delta
+	if _auto_heal_timer > 0.0 or not is_poisoned():
+		return
+	_auto_heal_timer = auto_heal_interval
+	var slot := _find_best_medical_slot()
+	if slot != -1:
+		inventory.UseItem(slot)
+
+# Largest heal that doesn't push health over max_health, or -1 if none fits.
+func _find_best_medical_slot() -> int:
+	var best_slot := -1
+	var best_heal := -1.0
+	for i in inventory.Items.size():
+		var med := inventory.Items[i] as MedicalData
+		if med == null or health + med.heal_amount > max_health:
+			continue
+		if med.heal_amount > best_heal:
+			best_heal = med.heal_amount
+			best_slot = i
+	return best_slot
+
+func _update_poison_alert() -> void:
+	var level := PoisonAlert.NONE
+	if is_poisoned():
+		level = PoisonAlert.CRITICAL if health < critical_health else PoisonAlert.WARNING
+	if level != poison_alert:
+		poison_alert = level
+		poison_alert_changed.emit(self, level)
+		_update_overhead_warning()
+
+func _update_overhead_warning() -> void:
+	if _warning_tween:
+		_warning_tween.kill()
+		_warning_tween = null
+	warning_sign.modulate.a = 1.0
+	warning_sign.visible = poison_alert == PoisonAlert.CRITICAL
+	warning_label.visible = poison_alert != PoisonAlert.NONE
+
+	match poison_alert:
+		PoisonAlert.WARNING:
+			warning_label.text = "%s is being poisoned" % display_name
+			warning_label.modulate = Color.WHITE
+		PoisonAlert.CRITICAL:
+			warning_label.text = "%s is badly poisoned!" % display_name
+			warning_label.modulate = Color.YELLOW
+			_warning_tween = create_tween().set_loops()
+			_warning_tween.tween_property(warning_sign, "modulate:a", 0.15, 0.4)
+			_warning_tween.tween_property(warning_sign, "modulate:a", 1.0, 0.4)
